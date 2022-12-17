@@ -1,0 +1,50 @@
+:root {
+  --primary: #1976d2;
+  --secondary: #26a69a;
+  --accent: #9c27b0;
+  --dark: #1d1d1d;
+  --dark-page: #121212;
+  --positive: #21ba45;
+  --negative: #c10015;
+  --info: #31ccec;
+  --warning: #f2c037;
+}
+
+@font-face {
+  font-family: Emoji;
+  src:
+    local("Apple Color Emojiji"),
+    local("Segoe Emoji"),
+    local("Noto Color Emoji");
+  unicode-range: U+1F000-1F644, U+203C-3299;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Emoji,
+    Helvetica,
+    Arial,
+    sans-serif;
+}
+
+html {
+  --theme: #f8f4ed;
+  --fcolor: #000;
+  --grey: #e5d3aa;
+}
+
+html.dark {
+  --theme: #2b333e;
+  --fcolor: #fffef9;
+  --grey: #132c33;
+}
+
+a {
+  text-decoration: none !important;
+}
