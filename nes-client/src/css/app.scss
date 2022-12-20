@@ -45,6 +45,16 @@ html.dark {
   --grey: #132c33;
 }
 
-a {
-  text-decoration: none !important;
+@layer {
+  a {
+    text-decoration: none !important;
+
+    &:link {
+      color: inherit;
+    }
+
+    &:visited {
+      color: inherit;
+    }
+  }
 }

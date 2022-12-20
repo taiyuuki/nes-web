@@ -3,20 +3,35 @@
     m="t-0 y-0 b-20"
     overflow="hidden"
     bg="bg"
-    :style="`height: ${cardHeight}`"
     class="game-card"
+    p="5"
+    border="box"
+    shadow="var-fcolor-1"
   >
-    <GameCover :game-info="gameInfo" />
-    <div m="t-10">
-      <div text="color-var-primary 14 ellipsis">
+    <GameCover
+      :game-info="gameInfo"
+    />
+    <div
+      m="t-10"
+      flex="row justify-between"
+    >
+      <div text="14 ellipsis">
         {{ gameInfo.title }}
+      </div>
+      <div
+        text="color-#fff 12"
+        bg="color-var-primary"
+        p="2"
+        border="radius-2"
+      >
+        {{ gameInfo.type }}
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-withDefaults(defineProps<{ gameInfo: RomInfo; cardHeight: string }>(), { cardHeight: 'auto' })
+defineProps<{ gameInfo: RomInfo }>()
 </script>
 
 <style lang="scss">

@@ -18,3 +18,9 @@ declare interface Category {
   id: string
   name: string
 }
+
+declare interface Suggestion {
+  id: string
+  cover: string
+  value: string
+}

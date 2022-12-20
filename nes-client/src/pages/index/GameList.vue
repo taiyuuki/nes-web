@@ -1,21 +1,34 @@
 <template>
   <div>
     <div text="bold 1.4em">
-      游戏列表
+      游戏列表 <span
+        v-if="total > 0"
+        text="weight-initial 16"
+      >({{ total }})</span>
     </div>
     <div
 
-      flex="row items-center"
+      flex="row items-center wrap"
       m="y-20"
       pointer
     >
+      <div
+        m="r-5"
+        p="5"
+        class="category"
+        :class="{ 'selected-category': currentCategory === '' }"
+        @click="getGameList('')"
+      >
+        全部
+      </div>
       <div
         v-for="item in categorys"
         :key="item.id"
         m="r-5"
         p="5"
+        class="category"
         :class="{
-          'select-category': item.id === currentCategory,
+          'selected-category': item.id === currentCategory,
         }"
         @click="getGameList(item.id)"
       >
@@ -31,7 +44,6 @@
           v-for="game in gameList"
           :key="game.id"
           :game-info="game"
-          :card-height="cardHeight"
           class="pointer"
           @click="playGame(game)"
         />
@@ -43,6 +55,7 @@
       layout="prev, pager, next, total, jumper"
       :page-size="20"
       :total="total"
+      class="m-x-auto m-t-10 w-fit"
     />
   </div>
 </template>
@@ -50,15 +63,16 @@
 <script setup lang="ts">
 import { requestCategory, requestGameList } from 'src/axios'
 import { useCurrentGame } from 'src/stores/current'
+import { pushToGamePlayer } from 'src/use/playgame'
+
+useHead({ title: '游戏列表 - 在线FC游戏' })
 
 const categorys = reactive<Category[]>([])
 const gameList = reactive<RomInfo[]>([])
-const router = useRouter()
 const current = useCurrentGame()
 let currentPage = $ref(1)
 let total = $ref(0)
 let currentCategory = $ref('')
-let cardHeight = $ref('auto')
 
 async function getGameList(key?: string) {
   if (key !== void 0) {
@@ -79,48 +93,28 @@ async function getGameList(key?: string) {
 
 function playGame(game: RomInfo) {
   current.game = game
-  router.push('/gamepad')
+  current.fromRouter = true
+  pushToGamePlayer(game.id)
 }
 
 watch(() => currentPage, () => {
   getGameList()
 })
 
-function computedCardHeight() {
-  const { clientWidth } = document.documentElement
-  switch (true) {
-    case clientWidth > 1024:
-      cardHeight = (clientWidth * 0.26) + 'px'
-      break
-    case clientWidth > 768 && clientWidth < 1024:
-      cardHeight = (clientWidth * 0.38) + 'px'
-      break
-    case clientWidth < 768:
-      cardHeight = (clientWidth * 0.51) + 'px'
-      break
-    case clientWidth < 599:
-      cardHeight = (clientWidth * 1.01) + 'px'
-      break
-    default:
-      cardHeight = (clientWidth * 0.26) + 'px'
-      break
-  }
-}
-
 onMounted(async () => {
   Object.assign(categorys, await requestCategory())
-  computedCardHeight()
-  window.addEventListener('resize', computedCardHeight)
   getGameList()
-})
-
-onUnmounted(() => {
-  window.removeEventListener('resize', computedCardHeight)
 })
 </script>
 
 <style lang="scss">
-.select-category {
+.category:hover {
+  color: #fffef9;
+  background-color: var(--primary);
+  border-radius: 5px;
+}
+
+.selected-category {
   color: #fffef9;
   background-color: var(--primary);
   border-radius: 5px;

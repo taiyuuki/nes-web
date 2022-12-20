@@ -58,8 +58,8 @@ export default defineConfig({
         'vue',
         'pinia',
         'vue-router',
-
         'vue/macros',
+        '@vueuse/head',
       ],
       dts: 'src/auto-imports.d.ts',
       resolvers: [elementPlus()],

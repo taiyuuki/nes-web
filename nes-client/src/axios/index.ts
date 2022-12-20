@@ -29,6 +29,16 @@ export async function requestGameList(options: GameSearchOption) {
   return data
 }
 
+export async function requestSuggestions(keyword: string) {
+  const { data } = await api.get(`/suggestions/${keyword}`)
+  return data
+}
+
+export async function requestRomInfo(id: string): Promise<{ code: number; rom: RomInfo  }> {
+  const { data } = await api.get(`/rom/${id}`)
+  return data
+}
+
 export default {
   install(app: App) {
     app.config.globalProperties.$axios = axios

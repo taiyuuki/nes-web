@@ -1,7 +1,7 @@
 import { Router as router } from 'express'
 import { setSelectSql } from '../sqlite3/sql'
 import db from '../sqlite3'
-import { checkQuery, resolveUrl } from '../utils/query'
+import { checkQuery, resolveUrl, resolveRomData } from '../utils/query'
 
 const roms = router()
 
@@ -16,7 +16,7 @@ roms.get('/categorys', async (req, res) => {
   })
 })
 
-const selectList = ['roms.id', 'title', 'cover', 'image', 'language', 'type', 'source', 'comment', 'location', 'categorys.name', 'size', 'publisher', 'url']
+const selectList = ['roms.id', 'title', 'cover', 'image', 'language', 'type', 'source', 'comment', 'location', 'categorys.name as category', 'size', 'publisher', 'url']
 const selectFrom = 'roms join categorys on roms.type=categorys.id'
 
 // /data/category/publisher/keyword/page/count
@@ -42,23 +42,10 @@ roms.get('/data/*', async (req, res) => {
   }
   const result: RomInfo[] = await db.allAsync(setSelectSql(sqlOptions))
   result.forEach(rom => {
-    rom.url = resolveUrl(rom.url)
-    rom.cover = resolveUrl(rom.cover)
-    rom.image = resolveUrl(rom.image)
+    resolveRomData(rom)
   })
   res.send({
     code: 0, result, count: rows[0].rows,
-  })
-})
-
-roms.get('/all', async (req, res) => {
-  const sql: SelectSqlOption = {
-    select: selectList,
-    from: selectFrom,
-  }
-  const result = await db.allAsync(setSelectSql(sql))
-  res.send({
-    code: 0, result, count: result.length,
   })
 })
 
@@ -72,9 +59,36 @@ roms.get('/rom/*', async (req, res) => {
   }
   const roms = await db.allAsync(setSelectSql(sql))
   if (roms.length === 1) {
+    resolveRomData(roms[0])
     res.send({
       code: 200,
       rom: roms[0],
+    })
+  }
+  else {
+    res.send({ code: 404 })
+  }
+})
+
+roms.get('/suggestions/*', async (req, res) => {
+  const [keyword] = req.path.replace('/suggestions/', '').split('/')
+  const sql: SelectSqlOption = {
+    select: ['id', 'title', 'cover'],
+    from: 'roms',
+    where: [`(\`title\` like '%${decodeURI(keyword)}%')`],
+  }
+  const result = await db.allAsync(setSelectSql(sql))
+  if (result.length > 0) {
+    const suggestions = result.map(game => {
+      return {
+        id: game.id,
+        value: game.title,
+        cover: resolveUrl(game.cover),
+      }
+    })
+    res.send({
+      code: 200,
+      suggestions,
     })
   }
   else {

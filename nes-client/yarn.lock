@@ -998,7 +998,21 @@
   resolved "https://mirrors.cloud.tencent.com/npm/@humanwhocodes%2fobject-schema/-/object-schema-1.2.1.tgz#b520529ec21d8e5945a1851dfd1c32e94e39ff45"
   integrity sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==
 
-"@iconify/types@^2.0.0":
+"@iconify-json/carbon@^1.1.11":
+  version "1.1.11"
+  resolved "https://mirrors.cloud.tencent.com/npm/@iconify-json%2fcarbon/-/carbon-1.1.11.tgz#912c7b367ab4a12da214047c79f178f36acebf66"
+  integrity sha512-IHkHSNmTM6q6b8DuKSzd+AEMYPZywSxcb+37kZU7ywtcwsGen3aVEvWFykopIWjjwj3xdZ/5UdwJRqhZDQMlNg==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify-json/ic@^1.1.10":
+  version "1.1.10"
+  resolved "https://mirrors.cloud.tencent.com/npm/@iconify-json%2fic/-/ic-1.1.10.tgz#b0897b744bf41526c14ef4cea91d244843d7adf8"
+  integrity sha512-EmyoOv/MHYEZcpRtvU/+PTSd3vGv81bpdaUiLzym3XI7Y8kLMWVGr/rnztgb12Mzwi/hHkwfRq1GgdbyNSVPPQ==
+  dependencies:
+    "@iconify/types" "*"
+
+"@iconify/types@*", "@iconify/types@^2.0.0":
   version "2.0.0"
   resolved "https://mirrors.cloud.tencent.com/npm/@iconify%2ftypes/-/types-2.0.0.tgz#ab0e9ea681d6c8a1214f30cd741fe3a20cc57f57"
   integrity sha512-+wluvCrRhXrhyOmRDJ3q8mux9JkKy5SJ/v8ol2tu4FVjyYvtEzkc/3pK15ET6RKg4b4w4BmTk1+gsCUhf21Ykg==
@@ -1209,7 +1223,7 @@
     eslint-plugin-jsonc "^2.4.0"
     jsonc-eslint-parser "^2.1.0"
 
-"@taiyuuki/unocss-preset@0.0.3":
+"@taiyuuki/unocss-preset@^0.0.3":
   version "0.0.3"
   resolved "https://mirrors.cloud.tencent.com/npm/@taiyuuki%2funocss-preset/-/unocss-preset-0.0.3.tgz#c56b6f301c1af892ff824cb7884a7827138c604d"
   integrity sha512-eOQptiMrtJgiJZ5wtVBSA4GryzttqDNMxBiR/4/uNVY60gxkgpPmMxDZ0hUz/OGEfSM/Ug8cydUpUiDOWOOnhg==
@@ -1416,6 +1430,36 @@
   dependencies:
     "@typescript-eslint/types" "5.45.0"
     eslint-visitor-keys "^3.3.0"
+
+"@unhead/dom@^1.0.9":
+  version "1.0.13"
+  resolved "https://mirrors.cloud.tencent.com/npm/@unhead%2fdom/-/dom-1.0.13.tgz#76aab52c913346e248916cbf9a8c64dfd11f0c5d"
+  integrity sha512-ErfhK3Nwk3kpxnPEOrkruKAdS3/TrNlKs0nYtKgFJ1ywJYg+uNwRFDe82v4JdUMhnfmbgL/qcO3PTx3Dv09IEQ==
+  dependencies:
+    "@unhead/schema" "1.0.13"
+
+"@unhead/schema@1.0.13", "@unhead/schema@^1.0.9":
+  version "1.0.13"
+  resolved "https://mirrors.cloud.tencent.com/npm/@unhead%2fschema/-/schema-1.0.13.tgz#f98ed4f7801091611be6d8b49a86b8a576621a82"
+  integrity sha512-K8SiAEkM8G7GaF1QvsKlthLmRqGB8R9SvZXMCucZqb2VQ6bU4IFSs/4q6dKxmV0fXb5AHdKUL9+rX/4rQ6FsZg==
+  dependencies:
+    "@zhead/schema" "^1.0.7"
+    hookable "^5.4.2"
+
+"@unhead/ssr@^1.0.9":
+  version "1.0.13"
+  resolved "https://mirrors.cloud.tencent.com/npm/@unhead%2fssr/-/ssr-1.0.13.tgz#d4b14bc3d227170d15dd0e3571313873df3bfc05"
+  integrity sha512-pach3THVx8LU54M6aQ4qZeQdcLjXVnPlpHe7pQjHGvD6iBJC5bZc8TL+CHdTRxeiq2DqMA5uyfoor7VJJTi5AQ==
+  dependencies:
+    "@unhead/schema" "1.0.13"
+
+"@unhead/vue@^1.0.9":
+  version "1.0.13"
+  resolved "https://mirrors.cloud.tencent.com/npm/@unhead%2fvue/-/vue-1.0.13.tgz#1d2df3867147794183086db3f1598c411a7637e3"
+  integrity sha512-sGl640UQqN8HUYTKXOh6gErk/vw8byPdx1+ECqX4ec7UZYktsWgfyIReYBu09Qm3O6pIYfX8HlZbDipX+wQAOQ==
+  dependencies:
+    "@unhead/schema" "1.0.13"
+    hookable "^5.4.2"
 
 "@unocss/astro@0.45.30":
   version "0.45.30"
@@ -1736,6 +1780,16 @@
     "@vueuse/shared" "9.6.0"
     vue-demi "*"
 
+"@vueuse/head@^1.0.22":
+  version "1.0.22"
+  resolved "https://mirrors.cloud.tencent.com/npm/@vueuse%2fhead/-/head-1.0.22.tgz#66b591d6e4dc636c6578d1c04a96bd6c2e00f3b6"
+  integrity sha512-YmUdbzNdCnhmrAFxGnJS+Rixj+swE+TQC9OEaYDHIro6gE7W11jugcdwVP00HrA4WRQhg+TOQ4YcY2oL/PP1hw==
+  dependencies:
+    "@unhead/dom" "^1.0.9"
+    "@unhead/schema" "^1.0.9"
+    "@unhead/ssr" "^1.0.9"
+    "@unhead/vue" "^1.0.9"
+
 "@vueuse/metadata@9.6.0":
   version "9.6.0"
   resolved "https://mirrors.cloud.tencent.com/npm/@vueuse%2fmetadata/-/metadata-9.6.0.tgz#b0a73277538cebef5d477983f74fdd2aa21ce5f9"
@@ -1747,6 +1801,11 @@
   integrity sha512-/eDchxYYhkHnFyrb00t90UfjCx94kRHxc7J1GtBCqCG4HyPMX+krV9XJgVtWIsAMaxKVU4fC8NSUviG1JkwhUQ==
   dependencies:
     vue-demi "*"
+
+"@zhead/schema@^1.0.7":
+  version "1.0.7"
+  resolved "https://mirrors.cloud.tencent.com/npm/@zhead%2fschema/-/schema-1.0.7.tgz#229d03af31025a02b2de02a7b065542d7121e0df"
+  integrity sha512-jN2ipkz39YrHd8uulgw/Y7x8iOxvR/cTkin/E9zRQVP5JBIrrJMiGyFFj6JBW4Q029xJ5dKtpwy/3RZWpz+dkQ==
 
 acorn-jsx@^5.3.2:
   version "5.3.2"
@@ -3683,6 +3742,11 @@ he@^1.2.0:
   resolved "https://mirrors.cloud.tencent.com/npm/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
 
+hookable@^5.4.2:
+  version "5.4.2"
+  resolved "https://mirrors.cloud.tencent.com/npm/hookable/-/hookable-5.4.2.tgz#6a1d3c4b3cb5b4262f99b3070ce0ee92c9c78049"
+  integrity sha512-6rOvaUiNKy9lET1X0ECnyZ5O5kSV0PJbtA5yZUgdEF7fGJEVwSLSislltyt7nFwVVALYHQJtfGeAR2Y0A0uJkg==
+
 hosted-git-info@^2.1.4:
   version "2.8.9"
   resolved "https://mirrors.cloud.tencent.com/npm/hosted-git-info/-/hosted-git-info-2.8.9.tgz#dffc0bf9a21c02209090f2aa69429e1414daf3f9"
@@ -4261,11 +4325,6 @@ jsesc@~0.5.0:
   resolved "https://mirrors.cloud.tencent.com/npm/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
   integrity sha1-597mbjXW/Bb3EP6R1c9p9w8IkR0=
 
-jsnes@^1.2.1:
-  version "1.2.1"
-  resolved "https://mirrors.cloud.tencent.com/npm/jsnes/-/jsnes-1.2.1.tgz#ca3718b7b28c00741142a73b88e39e177d14b1ce"
-  integrity sha512-Gn+lnv5B5c/TVwFSc8vzo7amiSogRyfMI9UL7VjYgKDrlTLf7GKuK2WD+t0gEcLbzh/NfMpkIlopzN/3cq760A==
-
 json-parse-better-errors@^1.0.1:
   version "1.0.2"
   resolved "https://mirrors.cloud.tencent.com/npm/json-parse-better-errors/-/json-parse-better-errors-1.0.2.tgz#bb867cfb3450e69107c131d1c514bab3dc8bcaa9"
@@ -4781,12 +4840,10 @@ natural-compare@^1.4.0:
   resolved "https://mirrors.cloud.tencent.com/npm/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha1-Sr6/7tdUHywnrPspvbvRXI1bpPc=
 
-nes-vue@1.2.1:
-  version "1.2.1"
-  resolved "https://mirrors.cloud.tencent.com/npm/nes-vue/-/nes-vue-1.2.1.tgz#5be6ab803f766e537af63598a12022a730fcdee9"
-  integrity sha512-csyuorki48MgqEQgJ6+RauDylubRas5Cn/Twjaf+6zUkFN/Al5JBnKB0TG9VWOQMTH9TK1A+F1VWs6OVF0xEJQ==
-  dependencies:
-    jsnes "^1.2.1"
+nes-vue@^1.2.4:
+  version "1.2.4"
+  resolved "https://mirrors.cloud.tencent.com/npm/nes-vue/-/nes-vue-1.2.4.tgz#04679ce60bf3ba6e5d2f38ca8617b5b3cfef080e"
+  integrity sha512-Vi2XG71RwaOe53u2gJK5Ku5VNCtX17y7N++fY2A1rUfqeE9V9Ax8YfUds0YmOtlPF0SbUlcooo10W50LFXlfng==
 
 node-fetch-native@^0.1.8:
   version "0.1.8"

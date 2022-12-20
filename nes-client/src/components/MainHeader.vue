@@ -16,7 +16,7 @@
       </a>
     </template>
     <template #content>
-      <div>
+      <div flex="row items-center justify-start">
         <router-link
           to="/"
           class="m-x-10"
@@ -31,6 +31,7 @@
         >
           游戏列表
         </router-link>
+        <SearchInput class="m-x-10" />
       </div>
     </template>
     <template #extra>
@@ -75,6 +76,7 @@ function setDark(val: boolean | string | number) {
     document.documentElement.classList.remove('dark')
   }
 }
+
 onMounted(() => {
   setTheme(theme.color)
   setDark(dark.value)
