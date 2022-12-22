@@ -19,7 +19,7 @@
         {{ gameInfo.title }}
       </div>
       <div
-        text="color-#fff 12"
+        text="color-var-primary-front 12"
         bg="color-var-primary"
         p="2"
         border="radius-2"

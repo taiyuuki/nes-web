@@ -7,6 +7,7 @@
       <a
         href="https://element-plus.gitee.io/zh-CN/"
         target="_blank"
+        display="none md:block"
       >
         <img
           src="element-plus-logo.svg"
@@ -16,11 +17,14 @@
       </a>
     </template>
     <template #content>
-      <div flex="row items-center justify-start">
+      <div
+        flex="row items-center justify-start"
+      >
         <router-link
           to="/"
           class="m-x-10"
           exact-active-class="text-color-var-primary"
+          display="none md:block"
         >
           首页
         </router-link>
@@ -28,6 +32,7 @@
           to="/gamelist"
           class="m-x-10"
           exact-active-class="text-color-var-primary"
+          display="none md:block"
         >
           游戏列表
         </router-link>
@@ -39,6 +44,7 @@
         <el-color-picker
           v-model="theme.color"
           show-alpha
+          color-format="hex"
           size="small"
         />
         <el-switch
@@ -55,17 +61,18 @@
 <script setup lang="ts">
 import { useTheme, useDark } from 'stores/theme'
 import { Moon, Sunny } from '@element-plus/icons-vue'
+import { getContrastColor } from 'src/utils'
+
 const theme = useTheme()
 const dark = useDark()
 const isDark = $ref(dark.value)
-// const menuIndex = $ref('0')
 
 theme.$subscribe(() => {
   setTheme(theme.color)
 })
 
 function setTheme(color: string) {
-  document.body.setAttribute('style', `--el-color-primary: ${color}; --primary: ${color}`,)
+  document.body.setAttribute('style', `--el-color-primary: ${color}; --primary: ${color}; --primary-front: ${getContrastColor(color)}`,)
 }
 function setDark(val: boolean | string | number) {
   dark.value = val as boolean

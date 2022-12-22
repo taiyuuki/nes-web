@@ -1,6 +1,6 @@
 :root {
   --primary: #1976d2;
-  --secondary: #26a69a;
+  --secondary: #0bea0b;
   --accent: #9c27b0;
   --dark: #1d1d1d;
   --dark-page: #121212;
@@ -20,6 +20,7 @@
 }
 
 body {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family:

@@ -7,9 +7,11 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BaseIcon: typeof import('./components/BaseIcon.vue')['default']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']
     ElColorPicker: typeof import('element-plus/es')['ElColorPicker']
     ElContainer: typeof import('element-plus/es')['ElContainer']
+    ElDialog: typeof import('element-plus/es')['ElDialog']
     ElHeader: typeof import('element-plus/es')['ElHeader']
     ElMain: typeof import('element-plus/es')['ElMain']
     ElMemuItem: typeof import('element-plus/es')['ElMemuItem']
@@ -19,10 +21,15 @@ declare module '@vue/runtime-core' {
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElSlider: typeof import('element-plus/es')['ElSlider']
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
+    ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ExampleComponent: typeof import('./components/ExampleComponent.vue')['default']
     GameCard: typeof import('./components/GameCard.vue')['default']
     GameCover: typeof import('./components/GameCover.vue')['default']
     IconControl: typeof import('./components/IconControl.vue')['default']
+    IconInner: typeof import('./components/IconInner.vue')['default']
+    IconOutside: typeof import('./components/IconOutside.vue')['default']
+    KeyboardOption: typeof import('./components/KeyboardOption.vue')['default']
+    KeySquare: typeof import('./components/KeySquare.vue')['default']
     MainHeader: typeof import('./components/MainHeader.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']

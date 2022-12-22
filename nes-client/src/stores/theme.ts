@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 export const useTheme = defineStore('theme', {
-  state: () => ({ color: '#66ccff' }),
+  state: () => ({ color: '#1976d2' }),
   actions: {
     setColor(color: string) {
       this.color = color

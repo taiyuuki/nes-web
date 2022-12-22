@@ -109,13 +109,13 @@ onMounted(async () => {
 
 <style lang="scss">
 .category:hover {
-  color: #fffef9;
+  color: var(--primary-front);
   background-color: var(--primary);
   border-radius: 5px;
 }
 
 .selected-category {
-  color: #fffef9;
+  color: var(--primary-front);
   background-color: var(--primary);
   border-radius: 5px;
 }

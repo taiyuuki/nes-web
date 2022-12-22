@@ -24,3 +24,9 @@ declare interface Suggestion {
   cover: string
   value: string
 }
+
+declare interface ObjectCustom {
+  keys<T extends any>(obj: T): (keyof T)[]
+}
+
+declare type Player = 'p1' | 'p2'

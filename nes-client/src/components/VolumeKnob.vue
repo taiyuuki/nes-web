@@ -24,7 +24,7 @@
     >
       <div
         h="20"
-        text="center"
+        text="center color-#fff"
       >
         {{ props.gain }}
       </div>
@@ -144,7 +144,7 @@ function setVolume(e: MouseEvent) {
     display: none;
     width: 40px;
     height: 140px;
-    background-color: rgb(0 0 0 / 80%);
+    background-color: rgb(0 0 0 / 50%);
     border-radius: 3px;
 
     &:hover {
