@@ -1,0 +1,144 @@
+:root {
+  --primary: #1976d2;
+  --secondary: #0bea0b;
+  --accent: #9c27b0;
+  --dark: #1d1d1d;
+  --dark-page: #121212;
+  --positive: #21ba45;
+  --negative: #c10015;
+  --info: #31ccec;
+  --warning: #f2c037;
+}
+
+@font-face {
+  font-family: Emoji;
+  src:
+    local("Apple Color Emojiji"),
+    local("Segoe Emoji"),
+    local("Noto Color Emoji");
+  unicode-range: U+1F000-1F644, U+203C-3299;
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  scrollbar-gutter: initial;
+  font-family:
+    system-ui,
+    -apple-system,
+    "Segoe UI",
+    Roboto,
+    Emoji,
+    Helvetica,
+    Arial,
+    sans-serif;
+}
+
+html {
+  --theme: #f8f4ed;
+  --fcolor: #000;
+  --grey: #e5d3aa;
+
+  -webkit-overflow-scrolling: touch;
+  scrollbar-color: var(--primary) !important;
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+
+  // scroll-behavior: smooth;
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: transparent !important;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--primary) !important;
+    border-radius: 4px;
+  }
+}
+
+html.dark {
+  --theme: #2b333e;
+  --fcolor: #fffef9;
+  --grey: #132c33;
+}
+
+@layer {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2.2rem;
+  }
+
+  h3 {
+    font-size: 2rem;
+  }
+
+  h4 {
+    font-size: 1.8rem;
+  }
+
+  h5 {
+    font-size: 1.5rem;
+  }
+
+  h6 {
+    font-size: 1.2rem;
+  }
+
+  div,
+  p {
+    margin: 0;
+    padding: 0;
+  }
+
+  i {
+    font-style: normal;
+  }
+
+  img::before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: transparent;
+    background:
+      #f5f5f5
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'%3E%3Cpath fill='rgb(220, 220, 220)' d='M40 472h432V312h-32v128H72V312H40v160zm0-206.245l49.373 25.437l53.82-46.829l56.159 50.528L256 247.052l56.648 47.839l56.159-50.528l53.82 46.829L472 265.755V40H40ZM72 72h368v174.244l-12.738 6.564l-58.809-51.171l-56.471 50.806L256 205.167l-55.982 47.276l-56.471-50.806l-58.809 51.171L72 246.244Z'/%3E%3C/svg%3E")
+      no-repeat center / 50% 50%;
+    content: "";
+  }
+
+  img::after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    color: var(--primary-front);
+    font-size: 12px;
+    line-height: 2;
+    white-space: nowrap;
+    text-align: center;
+    text-overflow: ellipsis;
+    background-color: #0006;
+    content: attr(alt);
+  }
+
+  a {
+    text-decoration: none !important;
+
+    &:link {
+      color: inherit;
+    }
+
+    &:visited {
+      color: inherit;
+    }
+  }
+}

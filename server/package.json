@@ -1,0 +1,39 @@
+{
+  "name": "nes-web-server",
+  "version": "0.0.1",
+  "description": "nes game server side",
+  "main": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/taiyuuki/nes-web"
+  },
+  "bugs": "https://github.com/taiyuuki/nes-web/issues",
+  "homepage": "https://github.com/taiyuuki/nes-web#readme",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts ./",
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "server": "pm2 start dist/index.js --watch",
+    "test": "vitest"
+  },
+  "keywords": [],
+  "author": "taiyuuki <taiyuuki@qq.com>",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "@taiyuuki/eslint-config-ts": "^0.0.5",
+    "@types/express": "^4.17.14",
+    "@types/node": "^18.11.9",
+    "eslint": "^8.26.0",
+    "fast-glob": "^3.2.12",
+    "kolorist": "^1.6.0",
+    "tsup": "^6.4.0",
+    "vitest": "^0.23.4"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.4"
+  }
+}
