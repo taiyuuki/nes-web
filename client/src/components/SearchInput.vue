@@ -1,13 +1,14 @@
 <template>
   <div>
     <el-autocomplete
-      ref="input"
+      ref="elInput"
       v-model="keyword"
       placeholder="搜索"
       :fetch-suggestions="getSuggestions"
       :trigger-on-focus="false"
       :debounce="500"
       @select="selectRom"
+      @keypress="onSearch"
     >
       <template #default="{ item }">
         <div
@@ -29,6 +30,13 @@
         </div>
       </template>
     </el-autocomplete>
+    <el-button
+      type="primary"
+      class="m-l-10"
+      @click="onSearch"
+    >
+      搜索游戏
+    </el-button>
   </div>
 </template>
 
@@ -36,9 +44,16 @@
 import { requestSuggestions } from 'src/axios'
 import { pushToGamePlayer } from 'src/use/playgame'
 import type { AutocompleteInstance } from 'element-plus'
+import { isNotNull } from 'src/utils'
+
+interface SearchInputEmits {
+  (e: 'search', keyword: string): void
+}
+
+const emits = defineEmits<SearchInputEmits>()
 
 let keyword = $ref('')
-const input = $ref<AutocompleteInstance | null>(null)
+const elInput = $ref<AutocompleteInstance | null>(null)
 
 async function getSuggestions(keyword: string, setSuggestions: (list: Suggestion[]) => void) {
   if (keyword.trim() === '') {
@@ -55,14 +70,24 @@ async function getSuggestions(keyword: string, setSuggestions: (list: Suggestion
   }
 }
 
+function clearInput() {
+  keyword = ''
+  if (isNotNull(elInput)) {
+    elInput.blur()
+    elInput.close()
+  }
+}
+
 function selectRom(item: Suggestion) {
   if (item.id !== '0') {
     pushToGamePlayer(item.id)
-    keyword = ''
-    if (input) {
-      input.blur()
-    }
+    clearInput()
   }
+}
+
+function onSearch() {
+  emits('search', keyword.trim())
+  clearInput()
 }
 </script>
 

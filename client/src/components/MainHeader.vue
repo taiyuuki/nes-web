@@ -26,7 +26,10 @@
         >
           游戏列表
         </router-link>
-        <SearchInput class="m-x-10" />
+        <SearchInput
+          class="m-x-10"
+          @search="searchGames"
+        />
       </div>
     </template>
     <template #extra>
@@ -53,6 +56,7 @@
 import { useTheme, useDark } from 'stores/theme'
 import { Moon, Sunny } from '@element-plus/icons-vue'
 import { getContrastColor } from 'src/utils'
+import { searchGames } from 'src/use/playgame'
 
 const theme = useTheme()
 const dark = useDark()

@@ -1012,13 +1012,6 @@
   dependencies:
     "@iconify/types" "*"
 
-"@iconify-json/noto@^1.1.7":
-  version "1.1.7"
-  resolved "https://mirrors.cloud.tencent.com/npm/@iconify-json%2fnoto/-/noto-1.1.7.tgz#0cd9ea6883079890723698075c00168270cb7cf5"
-  integrity sha512-GJBbgY5C2gFqF8csPRVzSA8UN2rEQRHTona9vqgybarkmCBySxv0A7S0kj03VvCKwnQ880G5LvVxkuun015B8w==
-  dependencies:
-    "@iconify/types" "*"
-
 "@iconify/types@*", "@iconify/types@^2.0.0":
   version "2.0.0"
   resolved "https://mirrors.cloud.tencent.com/npm/@iconify%2ftypes/-/types-2.0.0.tgz#ab0e9ea681d6c8a1214f30cd741fe3a20cc57f57"

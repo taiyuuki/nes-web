@@ -2,6 +2,7 @@
   <el-skeleton
     class="game-card m-t-20"
     animated
+    :throttle="50"
   >
     <template #template>
       <el-skeleton-item

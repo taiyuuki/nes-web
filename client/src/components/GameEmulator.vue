@@ -292,7 +292,7 @@ import VolumeKnob from 'components/VolumeKnob.vue'
 const props = defineProps<{ romInfo: RomInfo }>()
 
 const controler = useControler()// 控制器映射 pinia
-const current = useCurrentGame()// 当前运行的游戏 pinia
+const current = useCurrentGame()// 保存于local的游戏信息 pinia
 
 const nes = $ref<NesVueInstance | null>(null)// 模拟器组件实例
 const knob = $ref<InstanceType<typeof VolumeKnob> | null>(null)// 音量组件实例

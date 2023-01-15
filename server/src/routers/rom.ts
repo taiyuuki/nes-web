@@ -26,7 +26,7 @@ roms.get('/data/*', async (req, res) => {
   const sqlOptions: SelectSqlOption = {
     select: 'count(*) as rows',
     from: selectFrom,
-    where: [`(\`title\` like '%${keyword}%')`],
+    where: [`(\`title\` like '%${decodeURI(keyword)}%')`],
   }
   if (checkQuery(publisher)) {
     sqlOptions.where?.push(`publisher='${publisher}'`)

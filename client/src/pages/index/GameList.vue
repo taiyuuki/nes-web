@@ -52,7 +52,16 @@
     </template>
   </div>
   <div
-    v-if="isGettingGameList"
+    v-if="noResult"
+    w="100%"
+    m="y-100"
+    opacity="0.5"
+    text="center color-var-fcolor"
+  >
+    没有结果
+  </div>
+  <div
+    v-else-if="isGettingGameList"
     flex="row items-center wrap"
     class="game-list"
   >
@@ -76,7 +85,7 @@
     />
   </div>
   <el-pagination
-    v-if="total > config.pageTotal"
+    v-if="total > config.pageTotal && !isGettingGameList"
     v-model:current-page="currentPage"
     layout="prev, pager, next, total, jumper"
     background
@@ -91,8 +100,11 @@ import { requestCategory, requestGameList } from 'src/axios'
 import { useCurrentGame } from 'src/stores/current'
 import { pushToGamePlayer } from 'src/use/playgame'
 import { config } from 'src/client.config'
+import { isNotNull } from 'src/utils'
 
 useHead({ title: '游戏列表 - 在线红白机游戏' })
+
+const route = useRoute()
 
 const categorys = reactive<Category[]>([])
 const gameList = reactive<RomInfo[]>([])
@@ -100,24 +112,36 @@ const current = useCurrentGame()
 let currentPage = $ref(1)
 let total = $ref(0)
 let currentCategory = $ref('')
+let keyword = $ref('')
+let noResult = $ref(false)
+
+if (isNotNull(route.query.keyword)) {
+  keyword = route.query.keyword as string
+}
 
 const isGettingCategorys = computed(() => categorys.length === 0)
 const isGettingGameList = computed(() => gameList.length === 0)
 
 async function getGameList(key?: string) {
-  gameList.length = 0
-  if (key !== void 0) {
+  if (noResult) {
+    noResult = false
+  }
+  if (isNotNull(key)) {
     currentPage = 1
     currentCategory = key
   }
+  gameList.length = 0
   const resData = await requestGameList({
     cat: currentCategory,
     publisher: '',
-    keyword: '',
+    keyword,
     page: currentPage,
     limit: config.pageTotal,
   })
   Object.assign(gameList, resData.result)
+  if (gameList.length === 0) {
+    noResult = true
+  }
   total = resData.count
 }
 

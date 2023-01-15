@@ -1,36 +1,36 @@
 <template>
   <div
-    v-if="romInfoIsGetted"
+    v-if="romInfoZip.length > 0"
     flex="md:row"
   >
     <GameEmulator
       m="r-10"
-      :rom-info="romInfoZip[0]"
+      :rom-info="romInfo"
     />
     <div
       flex="1"
     >
       <div>
         <img
-          :src="romInfoZip[0].cover"
-          :alt="romInfoZip[0].title"
+          :src="romInfo.cover"
+          :alt="romInfo.title"
           w="50%"
         >
         <img
-          :src="romInfoZip[0].image"
-          :alt="romInfoZip[0].title"
+          :src="romInfo.image"
+          :alt="romInfo.title"
           w="50%"
         >
         <div
           text="bold 20"
         >
-          {{ romInfoZip[0].id }} - {{ romInfoZip[0].title }}
+          {{ romInfo.id }} - {{ romInfo.title }}
         </div>
-        <p>发行： {{ romInfoZip[0].publisher }}</p>
-        <p>发布： {{ romInfoZip[0].source }}</p>
+        <p>发行： {{ romInfo.publisher }}</p>
+        <p>发布： {{ romInfo.source }}</p>
         <p>容量： {{ romSize }} KB</p>
-        <p>类型： {{ romInfoZip[0].type }} - {{ romInfoZip[0].category }}</p>
-        <p>备注： {{ romInfoZip[0].comment }}</p>
+        <p>类型： {{ romInfo.type }} - {{ romInfo.category }}</p>
+        <p>备注： {{ romInfo.comment }}</p>
       </div>
     </div>
   </div>
@@ -48,14 +48,14 @@ import { config } from 'src/client.config'
 
 const { query } = useRoute()// 获取路由参数
 const current = useCurrentGame()// 当前运行游戏
-const recent = useRecent()
+const recent = useRecent()// 最近游玩
 
-const romInfoZip = $ref<RomInfo[]>([])// ROM信息
-const romInfoIsGetted = $computed(() => romInfoZip.length === 1)
+const romInfoZip = $ref<RomInfo[]>([])// ROM数据用数组包一层，减少类型报错。
+const romInfo = $computed(() => romInfoZip[0])// 然后用计算属性获取ROM信息
 
 // 页面title
 const title = $computed(() => {
-  return (romInfoIsGetted ? romInfoZip[0].title : '在线模拟器') + ' - 在线红白机游戏'
+  return (romInfoZip.length > 0 ? romInfo.title : 'FC模拟器') + ' - 在线红白机游戏'
 })
 useHead(() => ({ title }))
 
@@ -75,12 +75,13 @@ async function requestGameInfo() {
       errorNotify('游戏不存在')
     }
   }
-  const inIndex = recent.list.findIndex((rom) => rom.id === romInfoZip[0].id)
+  // 添加至最近游玩
+  const inIndex = recent.list.findIndex((rom) => rom.id === romInfo.id)
   if (inIndex !== 0) {
     if (inIndex > 0) {
       recent.list.splice(inIndex, 1)
     }
-    recent.list.unshift(romInfoZip[0])
+    recent.list.unshift(romInfo)
     if (recent.list.length > config.recentTotal) {
       recent.list.pop()
     }
@@ -89,7 +90,7 @@ async function requestGameInfo() {
 
 // ROM大小换算
 const romSize = $computed(() => {
-  return (Number(romInfoZip[0].size ?? 0) / 1024).toFixed(2)
+  return (Number(romInfo.size ?? 0) / 1024).toFixed(2)
 })
 
 onMounted(requestGameInfo)

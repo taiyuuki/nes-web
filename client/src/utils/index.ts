@@ -10,6 +10,10 @@ export function isNotNull<T>(target: T): target is Exclude<T, null | undefined> 
   return target !== void 0 && target !== null
 }
 
+export function isNotEmptyString(s: string): s is Exclude<string, ''> {
+  return s.trim() !== ''
+}
+
 export function stopDefault(e: DragEvent) {
   e.preventDefault()
   if (e.dataTransfer) {
