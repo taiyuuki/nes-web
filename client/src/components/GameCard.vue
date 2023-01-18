@@ -2,7 +2,7 @@
   <div
     m="t-0 y-0 b-20"
     overflow="hidden"
-    bg="bg"
+    bg="color-var-theme"
     class="game-card"
     p="5"
     border="box"
@@ -12,7 +12,7 @@
       :rom-info="romInfo"
     />
     <div
-      m="t-10"
+      m="y-10"
       flex="row justify-between"
     >
       <div text="14 ellipsis">

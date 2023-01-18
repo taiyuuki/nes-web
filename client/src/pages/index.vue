@@ -1,4 +1,5 @@
 <template>
+  <AjaxBar />
   <RouterView :key="$route.fullPath" />
 </template>
 

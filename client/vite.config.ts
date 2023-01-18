@@ -59,8 +59,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/safari-pinned-tab.svg'],
       manifest: {
-        name: 'nes-client',
-        short_name: 'nes-client',
+        name: '在线红白机游戏',
+        short_name: '在线NES游戏',
         theme_color: '#ffffff',
         icons: [
           {
@@ -80,6 +80,8 @@ export default defineConfig({
           },
         ],
       },
+      // enabled为true的情况下，建议浏览器开启网络旁通，避免缓存影响热更新，否则请设为false或移除devOptions。
+      devOptions: { enabled: true },
     }),
   ],
   build: {

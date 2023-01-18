@@ -4,7 +4,16 @@
     class="w-100% lg:w-80% m-auto lg:w-min-1024"
   >
     <template #title>
-      <div>LOGO</div>
+      <router-link
+        to="/"
+      >
+        <img
+          src="logo.png"
+          alt="LOGO"
+          h="46"
+          m="t-8"
+        >
+      </router-link>
     </template>
     <template #content>
       <div
@@ -12,7 +21,7 @@
       >
         <router-link
           to="/"
-          class="m-x-10"
+          class="m-x-10 pointer"
           exact-active-class="text-color-var-primary"
           display="none md:block"
         >
@@ -20,7 +29,7 @@
         </router-link>
         <router-link
           to="/gamelist"
-          class="m-x-10"
+          class="m-x-10 pointer"
           exact-active-class="text-color-var-primary"
           display="none md:block"
         >
@@ -39,12 +48,13 @@
           show-alpha
           color-format="hex"
           size="small"
+          class="pointer"
         />
         <el-switch
           v-model="isDark"
           :active-icon="Moon"
           :inactive-icon="Sunny"
-          class="m-l-10"
+          class="m-l-10 pointer"
           @change="setDark"
         />
       </div>

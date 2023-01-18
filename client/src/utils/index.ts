@@ -6,12 +6,21 @@ export function getContrastColor(hexcolor: string) {
   return yiq >= 10 ? 'black' : 'white'
 }
 
-export function isNotNull<T>(target: T): target is Exclude<T, null | undefined> {
+export function isNotNull<T>(target: T): target is NonNullable<T> {
   return target !== void 0 && target !== null
 }
 
-export function isNotEmptyString(s: string): s is Exclude<string, ''> {
-  return s.trim() !== ''
+export function isNotEmptyString<T>(s: T): s is Exclude<T, '' | null | undefined> {
+  if (typeof s === 'string') {
+    return s.trim() !== ''
+  }
+  return isNotNull(s)
+}
+
+export function between(v: number, min: number, max: number) {
+  return max <= min
+    ? min
+    : Math.min(max, Math.max(min, v))
 }
 
 export function stopDefault(e: DragEvent) {

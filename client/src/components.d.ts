@@ -7,6 +7,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AjaxBar: typeof import('./components/AjaxBar.vue')['default']
     BaseIcon: typeof import('./components/BaseIcon.vue')['default']
     CardSkeletion: typeof import('./components/skeleton/CardSkeletion.vue')['default']
     ElAutocomplete: typeof import('element-plus/es')['ElAutocomplete']

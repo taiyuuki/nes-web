@@ -4,6 +4,7 @@
       v-model="showKeyboardOptions"
       width="fit-content"
       :draggable="true"
+      class="bg-color-var-theme"
       @dragover="stopDefault"
     >
       <template #header>
@@ -113,7 +114,7 @@
       w="fit"
       text="center"
       pst="rel"
-      shadow="var-fcolor-1"
+      shadow="var-fcolor-2"
       :class="{ '[&>.control]:translate-y-0': mouseMoving }"
       @mousemove="showConsole"
     >
@@ -190,7 +191,8 @@
     </div>
     <div
       flex="row items-center justify-between"
-      shadow="inset-var-fcolor-2"
+      shadow="var-fcolor-2"
+      bg="color-var-theme"
       p="10"
     >
       <div

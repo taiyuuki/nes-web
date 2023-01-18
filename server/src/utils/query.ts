@@ -1,15 +1,18 @@
-import { baseUrl } from '../server.config'
+import { baseURL } from '../server.config'
 
-export function checkQuery(query: string | undefined) {
-  return query !== void 0 && query.trim() !== ''
+export function checkQuery<T>(query: T): query is Exclude<T, null | undefined | ''> {
+  if (typeof query === 'string') {
+    return query.trim() !== ''
+  }
+  return query !== void 0 && query !== null
 }
 
-export function resolveUrl(str: string) {
-  return baseUrl + str
+export function resolveURL(str: string) {
+  return baseURL + str
 }
 
 export function resolveRomData(rom: RomInfo) {
-  rom.url = resolveUrl(rom.url)
-  rom.cover = resolveUrl(rom.cover)
-  rom.image = resolveUrl(rom.image)
+  rom.url = resolveURL(rom.url)
+  rom.cover = resolveURL(rom.cover)
+  rom.image = resolveURL(rom.image)
 }

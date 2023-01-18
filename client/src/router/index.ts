@@ -14,11 +14,11 @@ routes.push({
   redirect: '/',
 })
 
-const createHistoryMode = import.meta.env.SSR ? createMemoryHistory : createWebHashHistory
+const createHistory = import.meta.env.SSR ? createMemoryHistory : createWebHashHistory
 
 const route = createRouter({
   scrollBehavior: () => ({ left: 0, top: 0 }),
   routes,
-  history: createHistoryMode(),
+  history: createHistory(),
 })
 export default route

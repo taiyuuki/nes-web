@@ -1,7 +1,6 @@
 .DS_Store
 .thumbs.db
 node_modules
-dist
 /**/node_modules
 
 # Log files
@@ -17,3 +16,5 @@ dist
 *.njsproj
 *.sln
 *.vscode
+
+fonts.txt

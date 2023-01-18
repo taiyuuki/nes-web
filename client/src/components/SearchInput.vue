@@ -8,7 +8,7 @@
       :trigger-on-focus="false"
       :debounce="500"
       @select="selectRom"
-      @keypress="onSearch"
+      @keypress="onEnter"
     >
       <template #default="{ item }">
         <div
@@ -29,14 +29,17 @@
           </div>
         </div>
       </template>
+      <template #suffix>
+        <div
+          w="25"
+          h="25"
+          pointer
+          text="hover:color-var-primary"
+          class="i-fluent-emoji-high-contrast:magnifying-glass-tilted-left"
+          @click="onSearch"
+        />
+      </template>
     </el-autocomplete>
-    <el-button
-      type="primary"
-      class="m-l-10"
-      @click="onSearch"
-    >
-      搜索游戏
-    </el-button>
   </div>
 </template>
 
@@ -88,6 +91,12 @@ function selectRom(item: Suggestion) {
 function onSearch() {
   emits('search', keyword.trim())
   clearInput()
+}
+
+function onEnter(e: KeyboardEvent) {
+  if (e.code === 'Enter') {
+    onSearch()
+  }
 }
 </script>
 

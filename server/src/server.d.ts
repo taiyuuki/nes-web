@@ -1,12 +1,12 @@
 declare type Sort = 'desc' | 'asc'
 
 declare interface SelectSqlOption {
-  select: string[] | string;
-  from: string;
-  where?: string[];
-  order?: { by: string; sort: Sort };
-  limit?: { page: number | string; count: number | string };
-  slot?: string[];
+  select: string[] | string
+  from: string
+  where?: string[]
+  order?: { by: string; sort: Sort }
+  limit?: { page: number | string; count: number | string }
+  slot?: string[]
 }
 
 declare interface RomInfo {

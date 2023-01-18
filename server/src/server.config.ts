@@ -1,13 +1,15 @@
 import { join } from 'path'
 
-export const dataBase = () => join(__dirname, '../db/nes.sqlite3')
-export const romPath = () => join(__dirname, '../roms')
+const dbPath = '../db/nes.sqlite3'
+const romPath = '../roms'
 export const port = 8848
-export const baseUrl = `http://localhost:${port}`
+export const baseURL = `http://localhost:${port}`
+export const getDataBasePath = () => join(__dirname, dbPath)
+export const getRomPath = () => join(__dirname, romPath)
 
 export default {
-  dataBase,
-  romPath,
+  getDataBasePath,
+  getRomPath,
   port,
-  baseUrl,
+  baseURL,
 }

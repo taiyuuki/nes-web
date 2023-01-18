@@ -1,8 +1,8 @@
 import type { Request, Response, RequestHandler, NextFunction } from 'express'
 import express from 'express'
 import roms from './routers/rom'
-import { port, romPath } from './server.config'
-import { info } from './utils/logger'
+import { port, getRomPath } from './server.config'
+import logger from './utils/logger'
 
 const setHeaders: RequestHandler = function (
   req: Request,
@@ -18,9 +18,9 @@ const setHeaders: RequestHandler = function (
 const app = express()
 
 app.use(setHeaders)
-app.use('/roms', express.static(romPath()))
+app.use('/roms', express.static(getRomPath()))
 app.use(roms)
 
 app.listen(port, () => {
-  info(`server: http://localhost:${port} is running...`)
+  logger.info(`server: http://localhost:${port} is running...`)
 })

@@ -1,14 +1,14 @@
 function setWhere(where: string[] | undefined): string {
-  return where ? (
-    'where '
+  return (where && where.length > 0) ? (
+    'WHERE '
     + where.reduce((pre, cur) => {
-      return pre + ' and ' + cur
+      return pre + ' AND ' + cur
     })
   ) : ''
 }
 
 export const setSelectSql = (option: SelectSqlOption) => {
-  let sql = 'select '
+  let sql = 'SELECT '
   if (typeof option.select === 'string') {
     sql += option.select + ' '
   }
@@ -22,15 +22,15 @@ export const setSelectSql = (option: SelectSqlOption) => {
       }
     })
   }
-  sql += `from ${option.from} `
+  sql += `FROM ${option.from} `
   sql += setWhere(option.where)
   if (option.order) {
-    sql += ` order by ${option.order.by} ${option.order.sort}`
+    sql += ` ORDER BY ${option.order.by} ${option.order.sort}`
   }
   if (option.limit) {
     const count = Number(option.limit.count)
     const page = Number(option.limit.page)
-    sql += ` limit ${count * (page - 1)}, ${count}`
+    sql += ` LIMIT ${count * (page - 1)}, ${count}`
   }
   return sql
 }

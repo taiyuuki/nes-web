@@ -1,15 +1,27 @@
 <template>
   <div>
-    <div text="bold 1.4em">
-      游戏列表 <span
+    <div text="bold 1.4rem">
+      <span
+        v-if="isSearching"
+        opacity="0.8"
+        class="no-zpix"
+      >
+        搜索： {{ keyword }}
+      </span>
+      <span v-else>
+        游戏列表
+      </span>
+      <span
         v-if="total > 0"
-        text="weight-initial 16"
-      >({{ total }})</span>
+        text="1rem"
+      >
+        （{{ total }}）
+      </span>
     </div>
     <el-skeleton
       v-if="isGettingCategorys"
       animated
-      style=" margin-top: 20px;"
+      style=" margin: 20px 0;"
     >
       <template #template>
         <el-skeleton-item
@@ -30,7 +42,7 @@
           m="r-5"
           p="5"
           class="category"
-          :class="{ 'selected-category': currentCategory === '' }"
+          :class="{ 'selected-category': category === '' }"
           @click="getGameList('')"
         >
           全部
@@ -42,7 +54,7 @@
           p="5"
           class="category"
           :class="{
-            'selected-category': item.id === currentCategory,
+            'selected-category': item.id === category,
           }"
           @click="getGameList(item.id)"
         >
@@ -86,7 +98,7 @@
   </div>
   <el-pagination
     v-if="total > config.pageTotal && !isGettingGameList"
-    v-model:current-page="currentPage"
+    v-model:current-page="page"
     layout="prev, pager, next, total, jumper"
     background
     :page-size="config.pageTotal"
@@ -102,40 +114,41 @@ import { pushToGamePlayer } from 'src/use/playgame'
 import { config } from 'src/client.config'
 import { isNotNull } from 'src/utils'
 
-useHead({ title: '游戏列表 - 在线红白机游戏' })
-
-const route = useRoute()
+const { query } = useRoute()
 
 const categorys = reactive<Category[]>([])
 const gameList = reactive<RomInfo[]>([])
 const current = useCurrentGame()
-let currentPage = $ref(1)
+let page = $ref(1)
 let total = $ref(0)
-let currentCategory = $ref('')
+let category = $ref('')
 let keyword = $ref('')
 let noResult = $ref(false)
 
-if (isNotNull(route.query.keyword)) {
-  keyword = route.query.keyword as string
-}
+const isSearching = $computed(() => isNotNull(query.keyword))
+const isGettingCategorys = $computed(() => categorys.length === 0)
+const isGettingGameList = $computed(() => gameList.length === 0)
 
-const isGettingCategorys = computed(() => categorys.length === 0)
-const isGettingGameList = computed(() => gameList.length === 0)
+const title = $computed(() => (isSearching ? `搜索：${query.keyword}` : '游戏列表') + ' - 在线红白机游戏')
+useHead({ title })
+
+if (isSearching) {
+  keyword = query.keyword as string
+}
 
 async function getGameList(key?: string) {
   if (noResult) {
     noResult = false
   }
   if (isNotNull(key)) {
-    currentPage = 1
-    currentCategory = key
+    page = 1
+    category = key
   }
   gameList.length = 0
   const resData = await requestGameList({
-    cat: currentCategory,
-    publisher: '',
+    cat: category,
     keyword,
-    page: currentPage,
+    page: page,
     limit: config.pageTotal,
   })
   Object.assign(gameList, resData.result)
@@ -151,7 +164,7 @@ function playGame(game: RomInfo) {
   pushToGamePlayer(game.id)
 }
 
-watch(() => currentPage, () => {
+watch(() => page, () => {
   getGameList()
 })
 
