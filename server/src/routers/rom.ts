@@ -3,6 +3,7 @@ import { setSelectSql } from '../sqlite3/sql'
 import db, { dispatchResponse } from '../sqlite3'
 import { sendEmpty } from '../utils/response'
 import { checkQuery, resolveURL, resolveRomData } from '../utils/query'
+import { imgDir } from '../server.config'
 
 const roms = router()
 
@@ -142,7 +143,7 @@ roms.get('/suggestions', async (req, res) => {
         return {
           id: game.id,
           value: game.title,
-          cover: resolveURL(game.cover),
+          cover: resolveURL(imgDir + game.cover),
         }
       })
       res.send({

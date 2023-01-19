@@ -1,4 +1,4 @@
-import { baseURL } from '../server.config'
+import { baseURL, romDir, imgDir } from '../server.config'
 
 export function checkQuery<T>(query: T): query is Exclude<T, null | undefined | ''> {
   if (typeof query === 'string') {
@@ -12,7 +12,8 @@ export function resolveURL(str: string) {
 }
 
 export function resolveRomData(rom: RomInfo) {
-  rom.url = resolveURL(rom.url)
-  rom.cover = resolveURL(rom.cover)
-  rom.image = resolveURL(rom.image)
+  rom.url = resolveURL(romDir + rom.url)
+  rom.cover = resolveURL(imgDir + rom.cover)
+  rom.image = resolveURL(imgDir + rom.image)
+  console.log(rom.url)
 }

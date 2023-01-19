@@ -78,6 +78,21 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
           },
+          {
+            src: 'icons/mstile-150x150.png',
+            sizes: '150x150',
+            type: 'image/png',
+          },
+          {
+            src: 'icons/favicon-16x16.png',
+            sizes: '16x16',
+            type: 'image/png',
+          },
+          {
+            src: 'icons/favicon-32x32.png',
+            sizes: '32x32',
+            type: 'image/png',
+          },
         ],
       },
       // enabled为true的情况下，建议浏览器开启网络旁通，避免缓存影响热更新，否则请设为false或移除devOptions。

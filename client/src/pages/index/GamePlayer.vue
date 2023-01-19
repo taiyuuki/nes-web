@@ -1,54 +1,101 @@
 <template>
-  <div
-    v-if="romInfoZip.length > 0"
-    flex="md:row"
-  >
-    <div>
-      <GameEmulator
-        m="r-10"
-        :rom-info="romInfo"
-      />
-      <div class="no-zpix [&>p]:m-t-15">
-        <img
-          :src="romInfo.cover"
-          :alt="romInfo.title"
-          w="50%"
-        >
-        <img
-          :src="romInfo.image"
-          :alt="romInfo.title"
-          w="50%"
-        >
+  <div v-if="romInfoZip.length > 0">
+    <div
+      flex="md:row"
+    >
+      <div m="r-10 t-10">
+        <GameEmulator
+          :rom-info="romInfo"
+        />
+      </div>
+      <div
+        v-if="!isGettingRandom"
+        flex="1"
+        p="5"
+      >
         <div
-          text="bold 20"
+          text="bold 1.2rem"
+          m="t-5 b-20"
+          p="2"
         >
-          {{ romInfo.id }} - {{ romInfo.title }}
+          同类游戏推荐
         </div>
-        <p>发行： {{ romInfo.publisher }}</p>
-        <p>发布： {{ romInfo.source }}</p>
-        <p>容量： {{ romSize }} KB</p>
-        <p>类型： {{ romInfo.type }} - {{ romInfo.category }}</p>
-        <p>{{ romInfo.comment }}</p>
+        <RecomBox
+          v-for="rom in randomList"
+          :key="rom.id"
+          :rom-info="rom"
+          @click="playGame(rom)"
+        />
       </div>
     </div>
     <div
-      v-show="!isGettingRandom"
-      flex="1"
+      m="t-10"
+      p="10"
+      shadow="var-fcolor-1"
+      class="no-zpix"
     >
-      <div
-        v-for="rom in randomList"
-        :key="rom.id"
-        @click="playGame(rom)"
+      <el-descriptions
+        :title="romInfo.title"
+        :column="1"
+        class="w-fit"
+        border
       >
-        <img
-          :src="rom.cover"
-          :alt="rom.title"
+        <el-descriptions-item
+          label-align="right"
         >
+          <template #label>
+            发行
+          </template>
+          {{ romInfo.publisher }}
+        </el-descriptions-item>
+        <el-descriptions-item
+          label-align="right"
+        >
+          <template #label>
+            发布
+          </template>
+          {{ romInfo.source }}
+        </el-descriptions-item>
+        <el-descriptions-item
+          label-align="right"
+        >
+          <template #label>
+            容量
+          </template>
+          {{ romSize }} KB
+        </el-descriptions-item>
+        <el-descriptions-item
+          label-align="right"
+        >
+          <template #label>
+            类型
+          </template>
+          {{ romInfo.type }} - {{ romInfo.category }}
+        </el-descriptions-item>
+        <el-descriptions-item
+          label-align="right"
+        >
+          <template #label>
+            备注
+          </template>
+          {{ romInfo.comment }}
+        </el-descriptions-item>
+      </el-descriptions>
+      <div
+        flex="row"
+        m="t-10"
+      >
+        <DesImg
+          :src="romInfo.cover"
+          :title="romInfo.title"
+          class="m-r-10"
+        />
+        <DesImg
+          :src="romInfo.image"
+          :title="romInfo.title"
+        />
       </div>
     </div>
-  </div>
-  <div v-else>
-    <!-- TODO:骨架屏或Loading -->
   </div>
 </template>
 
@@ -118,8 +165,7 @@ function playGame(game: RomInfo) {
 
 onMounted(async () => {
   await requestGameInfo()
-  const data = await requestRandomList(6, romInfo.type, romInfo.id)
+  const data = await requestRandomList(config.recomTotal, romInfo.type, romInfo.id)
   Object.assign(randomList, data.result)
-  console.log(data)
 })
 </script>

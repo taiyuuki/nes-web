@@ -36,6 +36,7 @@
       v-model="showSaveOption"
       width="fit-content"
       :draggable="true"
+      class="bg-color-var-theme"
     >
       <template #header>
         <div text="bold 28">
@@ -47,6 +48,7 @@
         :key="saveData.id"
         m="y-10"
         shadow="var-fcolor-1"
+        bg="color-var-base"
       >
         <div
           v-if="romInfo"

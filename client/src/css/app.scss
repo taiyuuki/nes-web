@@ -8,6 +8,9 @@
   --negative: #c10015;
   --info: #31ccec;
   --warning: #f2c037;
+
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 $fonts: system-ui,
@@ -39,25 +42,33 @@ $fonts: system-ui,
 
 body {
   box-sizing: border-box;
+  width: 100vw;
   margin: 0;
   padding: 0;
-  scrollbar-gutter: initial;
+  overflow: hidden;
   font-family:
     zpix,
     $fonts;
 }
 
+:root body {
+  position: absolute;
+}
+
 html {
-  --theme: #f8f4ed;
+  --base: #fff;
+  --theme: #f5f7fa;
   --fcolor: #000;
   --grey: #c0c4c3;
 
   -webkit-overflow-scrolling: touch;
   scrollbar-color: var(--primary) !important;
   scrollbar-width: thin;
-  scrollbar-gutter: stable;
 
+  // scrollbar-gutter: stable;
   // scroll-behavior: smooth;
+
+  overflow-y: scroll;
 
   ::-webkit-scrollbar {
     width: 8px;
@@ -72,7 +83,8 @@ html {
 }
 
 html.dark {
-  --theme: #2b333e;
+  --base: #000;
+  --theme: #262727;
   --fcolor: #fffef9;
   --grey: #132c33;
 }

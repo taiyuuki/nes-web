@@ -11,4 +11,5 @@ export const config = {
 
   // 模拟器
   emulator: { saveTotal: 3/* 存档数量 */ },
+  recomTotal: 8, // 推荐游戏数量
 }

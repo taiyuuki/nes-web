@@ -63,6 +63,8 @@ var import_sqlite3 = __toESM(require("sqlite3"));
 var import_path = require("path");
 var dbPath = "../db/nes.sqlite3";
 var romPath = "../roms";
+var romDir = "/roms/";
+var imgDir = "/roms/img/";
 var port = 8848;
 var baseURL = `http://localhost:${port}`;
 var getDataBasePath = () => (0, import_path.join)(__dirname, dbPath);
@@ -226,9 +228,10 @@ function resolveURL(str) {
   return baseURL + str;
 }
 function resolveRomData(rom) {
-  rom.url = resolveURL(rom.url);
-  rom.cover = resolveURL(rom.cover);
-  rom.image = resolveURL(rom.image);
+  rom.url = resolveURL(romDir + rom.url);
+  rom.cover = resolveURL(imgDir + rom.cover);
+  rom.image = resolveURL(imgDir + rom.image);
+  console.log(rom.url);
 }
 
 // src/routers/rom.ts
@@ -355,7 +358,7 @@ roms.get("/suggestions", async (req, res) => {
         return {
           id: game.id,
           value: game.title,
-          cover: resolveURL(game.cover)
+          cover: resolveURL(imgDir + game.cover)
         };
       });
       res.send({
