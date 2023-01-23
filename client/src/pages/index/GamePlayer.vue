@@ -30,13 +30,12 @@
     </div>
     <div
       m="t-10"
-      p="10"
-      shadow="var-fcolor-1"
+      p="y-10"
       class="no-zpix"
     >
       <el-descriptions
         :title="romInfo.title"
-        :column="1"
+        :column="2"
         class="w-fit"
         border
       >
@@ -103,9 +102,9 @@
 import { requestRomInfo, requestRandomList } from 'src/axios'
 import { useCurrentGame } from 'src/stores/current'
 import { useRecent } from 'stores/recent'
-import { errorNotify } from 'src/use/notify'
+import { errorNotify } from 'src/utils/notify'
 import { config } from 'src/client.config'
-import { pushToGamePlayer } from 'src/use/playgame'
+import { pushToGamePlayer } from 'src/router/playgame'
 
 const { query } = useRoute()// 获取路由参数
 const current = useCurrentGame()// 当前运行游戏

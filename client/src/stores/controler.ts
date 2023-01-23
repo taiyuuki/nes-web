@@ -1,4 +1,5 @@
 import type { Controller } from 'nes-vue'
+import { getKeys } from 'src/utils'
 
 export const useControler = defineStore('controler', {
   state: () => ({
@@ -31,22 +32,23 @@ export const useControler = defineStore('controler', {
       RESET: 'KeyR',
       SUSPEND: 'KeyV',
       CUT: 'Equal',
+      FULL: 'KeyF',
     },
   }),
   getters: {
     maps: (state) => {
-      const maps = {} as { [key: string]: string }
-      const p1_keys = (<ObjectCustom>Object).keys(state.p1)
-      const p2_keys = (<ObjectCustom>Object).keys(state.p1)
-      const p0_keys = (<ObjectCustom>Object).keys(state.p0)
+      const maps = {} as Record<string, string>
+      const p1_keys = getKeys(state.p1)
+      const p2_keys = getKeys(state.p1)
+      const p0_keys = getKeys(state.p0)
       p1_keys.forEach(key => {
-        maps[state.p1[key] as string] = 'p1' + key
+        maps[state.p1[key]] = 'p1' + key
       })
       p2_keys.forEach(key => {
-        maps[state.p2[key] as string] = 'p2' + key
+        maps[state.p2[key]] = 'p2' + key
       })
       p0_keys.forEach(key => {
-        maps[state.p0[key] as string] = 'p0' + key
+        maps[state.p0[key]] = 'p0' + key
       })
       return maps
     },

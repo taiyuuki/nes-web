@@ -95,8 +95,7 @@ export default defineConfig({
           },
         ],
       },
-      // enabled为true的情况下，建议浏览器开启网络旁通，避免缓存影响热更新，否则请设为false或移除devOptions。
-      devOptions: { enabled: true },
+      devOptions: { enabled: false },
     }),
   ],
   build: {

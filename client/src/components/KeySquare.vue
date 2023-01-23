@@ -28,11 +28,11 @@
 </template>
 
 <script setup lang="ts">
-import type { Controller } from 'nes-vue'
 import { useControler } from 'stores/controler'
 import { useDragged } from 'stores/dragged'
 import { keyboardNameMaps } from 'src/options/keyboard'
-import { stopDefault } from 'src/utils'
+import { isNotNull, stopDefault } from 'src/utils'
+import type { ControllerKeys } from 'src/utils/types'
 
 defineProps<{ keyPress: {
   code: string
@@ -57,19 +57,19 @@ function dragEnd(e: DragEvent) {
 }
 function dropToTarget(e: DragEvent) {
   const target = e.target as HTMLDivElement
-  if (target) {
+  if (isNotNull(target)) {
     const targetCode = target.dataset.code
     const targetMapKey = target.dataset.key
     const draggedMapKey = dragged.target.dataset.key
-    if (draggedMapKey) {
+    if (isNotNull(draggedMapKey)) {
       const draggedPlayer = draggedMapKey.substring(0, 2) as Player
-      const draggedKey = draggedMapKey.substring(2) as keyof Controller
-      if (targetCode) {
+      const draggedKey = draggedMapKey.substring(2) as ControllerKeys
+      if (isNotNull(targetCode)) {
         controler[draggedPlayer][draggedKey] = targetCode
       }
-      else if (targetMapKey) {
+      else if (isNotNull(targetMapKey)) {
         const targetPlayer = targetMapKey.substring(0, 2) as Player
-        const targetKey = targetMapKey.substring(2) as keyof Controller
+        const targetKey = targetMapKey.substring(2) as ControllerKeys
         const temp = controler[draggedPlayer][draggedKey] as string
         controler[draggedPlayer][draggedKey] = controler[targetPlayer][targetKey] as string
         controler[targetPlayer][targetKey] = temp

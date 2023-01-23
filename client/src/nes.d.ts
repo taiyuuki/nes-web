@@ -25,10 +25,6 @@ declare interface Suggestion {
   value: string
 }
 
-declare interface ObjectCustom {
-  keys<T extends any>(obj: T): (keyof T)[]
-}
-
 declare type Player = 'p1' | 'p2'
 
 declare interface SaveData {
@@ -37,3 +33,18 @@ declare interface SaveData {
     title: string
     date: string
 }
+
+type UnionToCross<T> = (T extends T ? (s: () => T) => void : never) extends (
+  s: infer R
+) => void
+  ? R
+  : never
+
+type GetCrossLast<T> = T extends () => infer R ? R : never
+
+declare type UnionToTuple<T, Result extends Array<any> = []> = [T] extends [never]
+  ? Result
+  : [
+      ...UnionToTuple<Exclude<T, GetCrossLast<UnionToCross<T>>>>,
+      GetCrossLast<UnionToCross<T>>,
+    ]

@@ -66,7 +66,7 @@
 import { useTheme, useDark } from 'stores/theme'
 import { Moon, Sunny } from '@element-plus/icons-vue'
 import { getContrastColor } from 'src/utils'
-import { searchGames } from 'src/use/playgame'
+import { searchGames } from 'src/router/playgame'
 
 const theme = useTheme()
 const dark = useDark()

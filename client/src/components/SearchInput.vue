@@ -45,7 +45,7 @@
 
 <script setup lang="ts">
 import { requestSuggestions } from 'src/axios'
-import { pushToGamePlayer } from 'src/use/playgame'
+import { pushToGamePlayer } from 'src/router/playgame'
 import type { AutocompleteInstance } from 'element-plus'
 import { isNotNull } from 'src/utils'
 

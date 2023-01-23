@@ -43,7 +43,7 @@
 <script setup lang="ts">
 import { useRecent } from 'stores/recent'
 import { useCurrentGame } from 'src/stores/current'
-import { pushToGamePlayer } from 'src/use/playgame'
+import { pushToGamePlayer } from 'src/router/playgame'
 
 const current = useCurrentGame()
 const recent = useRecent()

@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { between } from 'src/utils'
+import { inc } from 'src/utils'
 
 interface StackEntry {
   start: Function
@@ -23,26 +23,7 @@ const open = xhr.prototype.open
 let speed: number
 let timer: number | null
 let sessions = 0
-function inc(p: number, amount?: number) {
-  if (typeof amount !== 'number') {
-    if (p < 25) {
-      amount = (Math.random() * 3) + 3
-    }
-    else if (p < 65) {
-      amount = Math.random() * 3
-    }
-    else if (p < 85) {
-      amount = Math.random() * 2
-    }
-    else if (p < 99) {
-      amount = 0.6
-    }
-    else {
-      amount = 0
-    }
-  }
-  return between(p + amount, 0, 100)
-}
+
 let stack: StackEntry[] = []
 let highjackCount = 0
 function highjackAjax(stackEntry: StackEntry) {

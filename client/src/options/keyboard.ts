@@ -259,4 +259,5 @@ export const keyboardNameMaps: Record<string, string> = {
   'p0RESET': '重启',
   'p0SUSPEND': '静音',
   'p0CUT': '截图',
+  'p0FULL': '全屏',
 }

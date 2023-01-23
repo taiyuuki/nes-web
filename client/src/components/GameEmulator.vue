@@ -289,7 +289,7 @@ import { NesVue } from 'nes-vue'
 import { useCurrentGame } from 'src/stores/current'
 import { useControler } from 'stores/controler'
 import { getNow, stopDefault, setStorage, getStorage, removeStorage, isNotNull } from 'src/utils'
-import { errorNotify, successNotify } from 'src/use/notify'
+import { errorNotify, successNotify } from 'src/utils/notify'
 import { config } from 'src/client.config'
 import VolumeKnob from 'components/VolumeKnob.vue'
 
@@ -553,6 +553,9 @@ function systemControlEvent(e: KeyboardEvent) {
         break
       case controler.p0.RESET:
         reset()
+        break
+      case controler.p0.FULL:
+        fullscreen()
         break
       case controler.p0.SUSPEND:
         if (isNotNull(knob)) {

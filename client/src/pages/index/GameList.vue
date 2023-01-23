@@ -110,7 +110,7 @@
 <script setup lang="ts">
 import { requestCategory, requestGameList } from 'src/axios'
 import { useCurrentGame } from 'src/stores/current'
-import { pushToGamePlayer } from 'src/use/playgame'
+import { pushToGamePlayer } from 'src/router/playgame'
 import { config } from 'src/client.config'
 import { isNotNull } from 'src/utils'
 

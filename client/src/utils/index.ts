@@ -17,10 +17,35 @@ export function isNotEmptyString<T>(s: T): s is Exclude<T, '' | null | undefined
   return isNotNull(s)
 }
 
+export function getKeys<T extends Record<string, string>>(c: T) {
+  return Object.keys(c) as UnionToTuple<Exclude<keyof T, 'SELECT' | 'START'>>
+}
+
 export function between(v: number, min: number, max: number) {
   return max <= min
     ? min
     : Math.min(max, Math.max(min, v))
+}
+
+export function inc(p: number, amount?: number) {
+  if (typeof amount !== 'number') {
+    if (p < 25) {
+      amount = (Math.random() * 3) + 3
+    }
+    else if (p < 65) {
+      amount = Math.random() * 3
+    }
+    else if (p < 85) {
+      amount = Math.random() * 2
+    }
+    else if (p < 99) {
+      amount = 0.6
+    }
+    else {
+      amount = 0
+    }
+  }
+  return between(p + amount, 0, 100)
 }
 
 export function stopDefault(e: DragEvent) {
