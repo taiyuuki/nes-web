@@ -152,8 +152,26 @@ roms.get('/suggestions', async (req, res) => {
       })
     }
     else {
-      res.send({ code: 404 })
+      res.send({ code: 0 })
     }
+  }, res)
+})
+
+// 获取轮播图
+roms.get('/banner', async (_, res) => {
+  const sql: SelectSqlOption = {
+    select: ['roms.id as id', 'image', 'banner.title as title'],
+    from: 'banner join roms on banner.id=roms.id',
+  }
+  await dispatchResponse(async () => {
+    const banner = await db.allAsync(setSelectSql(sql))
+    banner.forEach(item => {
+      item.image = resolveURL(imgDir + item.image)
+    })
+    res.send({
+      code: 200,
+      banner,
+    })
   }, res)
 })
 

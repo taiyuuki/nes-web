@@ -1223,10 +1223,10 @@
     eslint-plugin-jsonc "^2.4.0"
     jsonc-eslint-parser "^2.1.0"
 
-"@taiyuuki/unocss-preset@^0.0.3":
-  version "0.0.3"
-  resolved "https://mirrors.cloud.tencent.com/npm/@taiyuuki%2funocss-preset/-/unocss-preset-0.0.3.tgz#c56b6f301c1af892ff824cb7884a7827138c604d"
-  integrity sha512-eOQptiMrtJgiJZ5wtVBSA4GryzttqDNMxBiR/4/uNVY60gxkgpPmMxDZ0hUz/OGEfSM/Ug8cydUpUiDOWOOnhg==
+"@taiyuuki/unocss-preset@^0.0.4":
+  version "0.0.4"
+  resolved "https://mirrors.cloud.tencent.com/npm/@taiyuuki%2funocss-preset/-/unocss-preset-0.0.4.tgz#14f33e7a57c14ee0c51a5f93a4944ebb2c87c772"
+  integrity sha512-F2GODIelWmmrg9SA5I5f5vu4IF9Fs4bFdNmQEevd7JU9L4tgYF9JZg5cw1YVuEuT+NeDgLspdurDV5PBTs2q8g==
 
 "@types/debug@^4.1.7":
   version "4.1.7"
@@ -2716,10 +2716,10 @@ electron-to-chromium@^1.4.251:
   resolved "https://mirrors.cloud.tencent.com/npm/electron-to-chromium/-/electron-to-chromium-1.4.284.tgz#61046d1e4cab3a25238f6bf7413795270f125592"
   integrity sha512-M8WEXFuKXMYMVr45fo8mq0wUrrJHheiKZf6BArTKk9ZBYCKJEOU5H8cdWgDT+qCVZf7Na4lVUaZsA+h6uA9+PA==
 
-element-plus@^2.2.21:
-  version "2.2.26"
-  resolved "https://mirrors.cloud.tencent.com/npm/element-plus/-/element-plus-2.2.26.tgz#5e46aa5d8127786bb158713957f8a253b35bf019"
-  integrity sha512-O/rdY5m9DkclpVg8r3GynyqCunm7MxSR142xSsjrZA77bi7bcwA3SIy6SPEDqHi5R4KqgkGYgKSp4Q4e3irbYg==
+element-plus@^2.2.29:
+  version "2.2.29"
+  resolved "https://mirrors.cloud.tencent.com/npm/element-plus/-/element-plus-2.2.29.tgz#7dd72f9cafdc102ae3f9e4efe612e403ef713a74"
+  integrity sha512-g4dcrURrKkR5uUX8n5RVnnqGnimoki9HfqS4yHHG6XwCHBkZGozdq4x+478BzeWUe31h++BO+7dakSx4VnM8RQ==
   dependencies:
     "@ctrl/tinycolor" "^3.4.1"
     "@element-plus/icons-vue" "^2.0.6"

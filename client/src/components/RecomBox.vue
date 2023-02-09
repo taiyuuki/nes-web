@@ -10,6 +10,7 @@
     hover="bg-color-var-primary text-color-var-primary-front"
   >
     <div
+      v-loading="isLoading"
       w="64"
       h="60"
       text="0"
@@ -18,6 +19,7 @@
         :src="romInfo.cover"
         :alt="romInfo.title"
         w="64"
+        @load="loaded"
       >
     </div>
     <div p="5">
@@ -35,4 +37,8 @@
 
 <script setup lang="ts">
 defineProps<{ romInfo: RomInfo }>()
+let isLoading = $ref(true)
+function loaded() {
+  isLoading = false
+}
 </script>

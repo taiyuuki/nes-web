@@ -3,6 +3,7 @@ import axios from 'axios'
 import type { App } from 'vue'
 import { config } from 'src/client.config'
 import { isNotEmptyString } from 'src/utils'
+import { errorNotify } from 'src/utils/notify'
 
 declare module 'vue' {
   interface ComponentCustomProperties {
@@ -18,7 +19,26 @@ interface GameSearchOption {
   limit: number
 }
 
-export const api = axios.create({ baseURL: config.baseURL })
+export const api = axios.create({
+  baseURL: config.baseURL,
+  timeout: 12000,
+})
+
+api.interceptors.response.use((response) => {
+  if (response.data.TimeOutFlag) {
+    errorNotify('请求超时，请稍后重试')
+  }
+  return response
+}, (err) => {
+  errorNotify('服务器无响应，请稍后重试')
+  console.error(err)
+})
+
+// 请求轮播图
+export async function requestBanner(): Promise<{ banner: { id: string; title: string; image: string }[] }> {
+  const { data } = await api.get('/banner')
+  return data
+}
 
 // 请求游戏分类
 export async function requestCategory(): Promise<{ [key: string]: string }> {
@@ -35,7 +55,6 @@ export async function requestGameList(options: GameSearchOption) {
   if (isNotEmptyString(options.keyword)) {
     path += `&keyword=${options.keyword}`
   }
-  console.log(path)
   const { data } = await api.get(path)
   return data
 }

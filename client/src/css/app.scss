@@ -42,7 +42,7 @@ $fonts: system-ui,
 
 body {
   box-sizing: border-box;
-  width: 100vw;
+  width: 100vw !important;
   margin: 0;
   padding: 0;
   overflow: hidden;
@@ -52,7 +52,7 @@ body {
 }
 
 :root body {
-  position: absolute;
+  position: absolute !important;
 }
 
 html {

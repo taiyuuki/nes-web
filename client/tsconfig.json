@@ -37,6 +37,9 @@
       ],
       "stores/*": [
         "src/stores/*"
+      ],
+      "router/*": [
+        "src/router/*"
       ]
     }
   },

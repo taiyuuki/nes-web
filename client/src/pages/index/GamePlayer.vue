@@ -1,8 +1,9 @@
 <template>
-  <div v-if="romInfoZip.length > 0">
-    <div
-      flex="md:row"
-    >
+  <template v-if="isGettingRomInfoZip">
+    <InnerLoading class="h-60vh" />
+  </template>
+  <template v-else>
+    <div flex="md:row">
       <div m="r-10 t-10">
         <GameEmulator
           :rom-info="romInfo"
@@ -13,13 +14,6 @@
         flex="1"
         p="5"
       >
-        <div
-          text="bold 1.2rem"
-          m="t-5 b-20"
-          p="2"
-        >
-          同类游戏推荐
-        </div>
         <RecomBox
           v-for="rom in randomList"
           :key="rom.id"
@@ -80,22 +74,8 @@
           {{ romInfo.comment }}
         </el-descriptions-item>
       </el-descriptions>
-      <div
-        flex="row"
-        m="t-10"
-      >
-        <DesImg
-          :src="romInfo.cover"
-          :title="romInfo.title"
-          class="m-r-10"
-        />
-        <DesImg
-          :src="romInfo.image"
-          :title="romInfo.title"
-        />
-      </div>
     </div>
-  </div>
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -114,10 +94,11 @@ const romInfoZip = $ref<RomInfo[]>([])// ROM数据用数组包一层，减少类
 const romInfo = $computed(() => romInfoZip[0])// 然后用计算属性获取ROM信息
 const randomList = reactive<RomInfo[]>([])
 const isGettingRandom = $computed(() => randomList.length === 0)
+const isGettingRomInfoZip = $computed(() => romInfoZip.length === 0)
 
 // 页面title
 const title = $computed(() => {
-  return (romInfoZip.length > 0 ? romInfo.title : 'FC模拟器') + ' - 在线红白机游戏'
+  return '在线红白机游戏 - ' + (romInfoZip.length > 0 ? romInfo.title : 'FC模拟器')
 })
 useHead(() => ({ title }))
 

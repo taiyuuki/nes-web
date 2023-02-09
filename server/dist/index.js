@@ -366,8 +366,24 @@ roms.get("/suggestions", async (req, res) => {
         suggestions
       });
     } else {
-      res.send({ code: 404 });
+      res.send({ code: 0 });
     }
+  }, res);
+});
+roms.get("/banner", async (_, res) => {
+  const sql = {
+    select: ["roms.id as id", "image", "banner.title as title"],
+    from: "banner join roms on banner.id=roms.id"
+  };
+  await dispatchResponse(async () => {
+    const banner = await sqlite3_default.allAsync(setSelectSql(sql));
+    banner.forEach((item) => {
+      item.image = resolveURL(imgDir + item.image);
+    });
+    res.send({
+      code: 200,
+      banner
+    });
   }, res);
 });
 var rom_default = roms;
@@ -383,6 +399,7 @@ var setHeaders = function(req, res, next) {
   next();
 };
 var app = (0, import_express2.default)();
+app.use(import_express2.default.json());
 app.use(setHeaders);
 app.use("/roms", import_express2.default.static(getRomPath()));
 app.use(rom_default);

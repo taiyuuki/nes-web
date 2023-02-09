@@ -17,6 +17,7 @@ const setHeaders: RequestHandler = function (
 }
 const app = express()
 
+app.use(express.json())
 app.use(setHeaders)
 app.use('/roms', express.static(getRomPath()))
 app.use(roms)

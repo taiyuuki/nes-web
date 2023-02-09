@@ -1,5 +1,11 @@
 <template>
   <div
+    display="sm:flex block"
+    flex="items-center"
+  >
+    <TBanner />
+  </div>
+  <div
     v-if="recent.list.length > 0"
   >
     <div flex="row items-center">

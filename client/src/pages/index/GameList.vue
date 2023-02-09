@@ -129,7 +129,7 @@ const isSearching = $computed(() => isNotNull(query.keyword))
 const isGettingCategorys = $computed(() => categorys.length === 0)
 const isGettingGameList = $computed(() => gameList.length === 0)
 
-const title = $computed(() => (isSearching ? `搜索：${query.keyword}` : '游戏列表') + ' - 在线红白机游戏')
+const title = $computed(() => '在线红白机游戏 - ' + (isSearching ? `搜索：${query.keyword}` : '游戏列表'))
 useHead({ title })
 
 if (isSearching) {

@@ -98,6 +98,7 @@ export default defineConfig({
       devOptions: { enabled: false },
     }),
   ],
+  server: { port: 8799 },
   build: {
     rollupOptions: {
       output: {

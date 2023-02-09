@@ -11,5 +11,15 @@
     "scss",
     "sass",
     "vue",
-  ]
+  ],
+  "[vue]": {
+    "gitlens.codeLens.scopes": [
+      "document"
+    ],
+    "inlineFold.regex": ".*?=\"(.{20,})\"",
+    "inlineFold.regexGroup": "1",
+    "inlineFold.maskChar": "░░░",
+    "inlineFold.unfoldOnLineSelect": true
+  },
+  "inlineFold.regex": ".*?=\\\"(.{20,})\\\"",
 }

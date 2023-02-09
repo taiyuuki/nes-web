@@ -5,7 +5,7 @@
 
 <script setup lang="ts">
 useHead(() => {
-  return { title: '首页 - 在线红白机游戏' }
+  return { title: '在线红白机游戏 - 首页' }
 })
 </script>
 

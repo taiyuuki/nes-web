@@ -45,13 +45,13 @@ const dragged = useDragged()
 function dragStart(e: DragEvent) {
   const target = e.target as HTMLDivElement
   dragged.target = target
-  if (target) {
+  if (isNotNull(target)) {
     target.classList.add('key-dragging')
   }
 }
 function dragEnd(e: DragEvent) {
   const target = e.target as HTMLDivElement
-  if (target) {
+  if (isNotNull(target)) {
     target.classList.remove('key-dragging')
   }
 }
