@@ -97,6 +97,10 @@ onMounted(async () => {
     clip-path: $clip-left;
   }
 
+  .el-carousel__mask {
+    background-color: transparent;
+  }
+
   .el-carousel__indicators--outside {
     button {
       color: var(--fcolor);

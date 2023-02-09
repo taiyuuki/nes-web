@@ -45,7 +45,6 @@
       <div class="theme">
         <el-color-picker
           v-model="theme.color"
-          show-alpha
           color-format="hex"
           size="small"
           class="pointer"

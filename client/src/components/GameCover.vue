@@ -13,7 +13,6 @@
       m="x-auto y-0"
       :src="romInfo.cover"
       :alt="romInfo.title"
-      :title="romInfo.title"
       draggable="false"
       @load="loaded"
     >

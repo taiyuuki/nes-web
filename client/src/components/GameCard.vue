@@ -7,6 +7,7 @@
     p="5"
     border="box"
     shadow="var-fcolor-1"
+    :title="romInfo.title"
   >
     <GameCover
       :rom-info="romInfo"

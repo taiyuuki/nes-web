@@ -35,7 +35,7 @@ function loaded() {
 
   .item-title {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 100%;
     padding: 2px 5px;
@@ -43,7 +43,7 @@ function loaded() {
     font-size: 1.2rem;
     text-align: center;
     background-color: rgb(255 255 255 / 50%);
-    transform: translateY(100%);
+    transform: translateY(-100%);
     transition: transform 500ms;
   }
 
