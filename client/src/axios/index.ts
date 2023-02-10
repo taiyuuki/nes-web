@@ -26,11 +26,14 @@ export const api = axios.create({
 
 api.interceptors.response.use((response) => {
   if (response.data.TimeOutFlag) {
-    errorNotify('请求超时，请稍后重试')
+    errorNotify('请求超时，请稍后重试。')
+  }
+  if (response.data.code !== 200) {
+    errorNotify('请求错误，请检查接口或参数是否正确。')
   }
   return response
 }, (err) => {
-  errorNotify('服务器无响应，请稍后重试')
+  errorNotify('服务器无响应，请稍后重试。')
   console.error(err)
 })
 

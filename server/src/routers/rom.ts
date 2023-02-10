@@ -116,7 +116,7 @@ roms.get('/rom', async (req, res) => {
       })
     }
     else {
-      res.send({ code: 404 })
+      res.send({ code: 400 })
     }
   }, res)
 })
