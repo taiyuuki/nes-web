@@ -1,8 +1,11 @@
 <template>
   <div
-    v-loading="isLoading"
     class="banner-cover"
   >
+    <InnerLoading
+      v-if="isLoading"
+      class="h-100%"
+    />
     <img
       v-show="!isLoading"
       :src="src"

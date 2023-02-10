@@ -10,12 +10,17 @@
     hover="bg-color-var-primary text-color-var-primary-front"
   >
     <div
-      v-loading="isLoading"
       w="64"
       h="60"
       text="0"
+      bg="var-theme"
     >
+      <InnerLoading
+        v-if="isLoading"
+        class="h-100%"
+      />
       <img
+        v-show="!isLoading"
         :src="romInfo.cover"
         :alt="romInfo.title"
         w="64"

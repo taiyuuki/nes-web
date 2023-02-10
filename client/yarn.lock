@@ -6814,6 +6814,11 @@ vfile@^3.0.0:
     unist-util-stringify-position "^1.0.0"
     vfile-message "^1.0.0"
 
+vite-plugin-electron@^0.11.1:
+  version "0.11.1"
+  resolved "https://mirrors.cloud.tencent.com/npm/vite-plugin-electron/-/vite-plugin-electron-0.11.1.tgz#1a909c42e13c391e0700e03a0ed5192b67d2bf9a"
+  integrity sha512-pi9Wy4KCGjKIRvp7/5VUOT8BYEAJdZrpy3gI+GhGc5vYs2V9yPxLOtfCqNfSTYqH3uM6hYY6MyifFVku3Wg+2A==
+
 vite-plugin-pages@^0.26.0:
   version "0.26.0"
   resolved "https://mirrors.cloud.tencent.com/npm/vite-plugin-pages/-/vite-plugin-pages-0.26.0.tgz#2acf077b759fd4e34d0f9677ab1c32692e12249e"

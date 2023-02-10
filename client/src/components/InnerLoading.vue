@@ -39,8 +39,7 @@
   display: block;
   width: 18px;
   height: 18px;
-  margin: 30px;
-  color: var(--fcolor);
+  color: var(--primary);
   font-size: 0;
 }
 

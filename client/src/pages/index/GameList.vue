@@ -21,7 +21,7 @@
     <el-skeleton
       v-if="isGettingCategorys"
       animated
-      style=" margin: 20px 0;"
+      style=" margin-top: 20px;"
     >
       <template #template>
         <el-skeleton-item

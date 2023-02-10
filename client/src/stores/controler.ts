@@ -37,20 +37,20 @@ export const useControler = defineStore('controler', {
   }),
   getters: {
     maps: (state) => {
-      const maps = {} as Record<string, string>
+      const keyMaps = {} as Record<string, string>
       const p1_keys = getKeys(state.p1)
       const p2_keys = getKeys(state.p1)
       const p0_keys = getKeys(state.p0)
       p1_keys.forEach(key => {
-        maps[state.p1[key]] = 'p1' + key
+        keyMaps[state.p1[key]] = 'p1' + key
       })
       p2_keys.forEach(key => {
-        maps[state.p2[key]] = 'p2' + key
+        keyMaps[state.p2[key]] = 'p2' + key
       })
       p0_keys.forEach(key => {
-        maps[state.p0[key]] = 'p0' + key
+        keyMaps[state.p0[key]] = 'p0' + key
       })
-      return maps
+      return keyMaps
     },
   },
   persist: true,
