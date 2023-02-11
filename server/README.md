@@ -1,12 +1,13 @@
 <h1 align="center">在线红白机游戏</h1>
 
 <p align="center">
-<img alt="nes-vue version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/nes-vue">
+<img alt="express version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/express">
 </p>
 
 <p align="center">
 基于vue3 + express的在线FC(NES)🎮游戏项目，服务端。
 </p>
+
 * 框架：`express`
 * 数据库：`sqlite3`
 * 类型检测：`typescript`
@@ -100,7 +101,7 @@ pm2 monit
 * *page*：分页，默认值为1
 * *limit*：每页数量，默认值为20
 
-示例：``http://localhost:8848/romlist?cat=ACT&page=2&limit=10`
+示例：`http://localhost:8848/romlist?cat=ACT&page=2&limit=10`
 
 #### 随机获取游戏列表
 

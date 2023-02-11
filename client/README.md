@@ -1,13 +1,14 @@
 <h1 align="center">在线红白机游戏</h1>
 
 <p align="center">
-<img alt="vue version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/vue"><img alt="nes-vue version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/nes-vue">
-<img alt="element-plus version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/element-plus">
+<img alt="vue version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/vue?color=green"><img alt="nes-vue version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/nes-vue?color=red">
+<img alt="element-plus version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/element-plus?color=lightblue">
 </p>
 
 <p align="center">
 基于vue3 + ts的在线FC(NES)🎮游戏项目，前端。
 </p>
+
 * 框架：`vue3`
 * 构建工具：`vite`
 * FC模拟器组件：[taiyuuki/nes-vue](https://github.com/taiyuuki/nes-vue)

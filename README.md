@@ -1,13 +1,14 @@
 <h1 align="center">在线红白机游戏</h1>
 
 <p align="center">
-<img alt="vue version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/vue"><img alt="express version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/express"><img alt="nes-vue version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/nes-vue">
-<img alt="element-plus version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/element-plus">
+<img alt="vue version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/vue?color=greed"><img alt="express version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/express"><img alt="nes-vue version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/nes-vue?color=red">
+<img alt="element-plus version" src="https://img.shields.io/github/package-json/dependency-version/taiyuuki/nes-web/element-plus?color=lightblue">
 </p>
 
 <p align="center">
 基于vue3 + express的在线FC(NES)🎮游戏项目。
 </p>
+
 ## 功能
 
 在线玩FC游戏，一共约400个游戏，全中文版。
