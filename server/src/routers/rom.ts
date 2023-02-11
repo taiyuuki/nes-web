@@ -98,7 +98,7 @@ roms.get('/random', async (req, res) => {
 roms.get('/rom', async (req, res) => {
   const id = req.query.id as string
   if (!checkQuery(id)) {
-    sendEmpty(res)
+    sendEmpty(res, 'id')
     return
   }
   const sql: SelectSqlOption = {
@@ -133,7 +133,7 @@ roms.get('/suggestions', async (req, res) => {
     sql.where = [`(\`title\` like '%${decodeURI(keyword)}%')`]
   }
   else {
-    sendEmpty(res)
+    sendEmpty(res, 'keyword')
     return
   }
   await dispatchResponse(async () => {

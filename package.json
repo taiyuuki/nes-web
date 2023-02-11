@@ -1,0 +1,19 @@
+{
+  "name": "nes-web",
+  "version": "0.0.1",
+  "description": "包含前后端的在线红白机游戏",
+  "author": "taiyuuki <taiyuuki@qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/taiyuuki/nes-web"
+  },
+  "bugs": "https://github.com/taiyuuki/nes-web/issues",
+  "homepage": "https://github.com/taiyuuki/nes-web#readme",
+  "private": true,
+  "dependencies": {
+    "element-plus": "^2.2.29",
+    "express": "^4.18.2",
+    "nes-vue": "^1.3.6",
+    "vue": "^3.2.41"
+  }
+}
