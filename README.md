@@ -17,7 +17,9 @@
 
 所有游戏资料、图片提取自`OfflineList`。
 
-* 按游戏类型进行分类
+* 设置主题色
+* 黑暗模式
+* 游戏分类
 * 搜索
 * 支持本地ROM
 * 支持双人
@@ -83,7 +85,7 @@ nes-web
 
 前端和后端需要分别安装依赖，前端包管理器`yarn`，后端包管理器`pnpm`。
 
-后端需要的游戏ROM、图片等静态资源，我单独打包放在release里，解压后将roms文件夹放在server文件夹内即可。
+后端需要的游戏ROM、图片等静态资源，我单独打包放在[release](https://github.com/taiyuuki/nes-web/releases/download/v0.0.1/roms.zip)里，下载、解压后将roms文件夹放在server文件夹内即可。
 
 ### 启动服务端
 

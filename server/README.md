@@ -16,6 +16,14 @@
 
 ## 项目运行
 
+游戏ROM、图片等静态资源，我单独打包放在[release](https://github.com/taiyuuki/nes-web/releases/download/v0.0.1/roms.zip)里，下载、解压后将roms文件夹放在server文件夹内即可。
+
+### 安装依赖
+
+```shell
+pnpm install
+```
+
 ### 启动服务端
 
 #### node
@@ -28,7 +36,7 @@ node dist/index.js
 
 #### pm2
 
-个人推荐使用`pm2`：
+推荐使用`pm2`
 
 安装pm2
 
@@ -163,6 +171,4 @@ pm2 monit
 
 **API: `http://localhost:8848/roms/游戏名`**
 
-例如，
-
-大金刚游戏ROM地址为：`http://localhost:8848/roms/大金刚 (简)`
+例如，大金刚：`http://localhost:8848/roms/大金刚 (简)`
