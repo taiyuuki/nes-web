@@ -24,6 +24,8 @@
 pnpm install
 ```
 
+注意：安装sqlite3时可能会报错，这是因为安装需要python或[mapbox/node-pre-gyp](https://github.com/mapbox/node-pre-gyp)编译二进制文件，安装此二者之一即可。
+
 ### 启动服务端
 
 #### node
@@ -84,7 +86,7 @@ pm2 monit
 
 服务器默认端口为8848，默认本地启动地址：`http://localhost:8848`
 
-地址可以在`src/server.config.ts`中进行设置，前端也需要修改`src/clint.config.ts`中对应的设置。
+地址可以在`src/server.config.ts`中进行设置，前端也需要修改`src/client.config.ts`中对应的设置。
 
 #### 获取游戏分类
 
