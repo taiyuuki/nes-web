@@ -8,6 +8,7 @@ import autoAPIs from 'unplugin-auto-import/vite'
 import autoComponents from 'unplugin-vue-components/vite'
 import { ElementPlusResolver as elementPlus } from 'unplugin-vue-components/resolvers'
 import { VitePWA as pwa } from 'vite-plugin-pwa'
+import reactivityTransform from '@vue-macros/reactivity-transform/vite'
 
 function resolve(dir: string) {
   return path.join(__dirname, dir)
@@ -28,7 +29,8 @@ export default defineConfig({
     },
   },
   plugins: [
-    vue({ reactivityTransform: true }),
+    reactivityTransform(),
+    vue(),
     unocss(),
     pages({
       extensions: ['vue'],
