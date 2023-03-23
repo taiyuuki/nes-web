@@ -292,6 +292,7 @@ import { getNow, stopDefault, setStorage, getStorage, removeStorage, isNotNull }
 import { errorNotify, successNotify } from 'src/utils/notify'
 import { config } from 'src/client.config'
 import VolumeKnob from 'components/VolumeKnob.vue'
+import { useGamepad } from 'src/utils/gamepad'
 
 const props = defineProps<{ romInfo: RomInfo }>()
 
@@ -571,15 +572,21 @@ function systemControlEvent(e: KeyboardEvent) {
   }
 }
 
+const gamepad = useGamepad()
+
 onMounted(() => {
   window.addEventListener('resize', fullscreenHandler)
   document.addEventListener('keypress', systemControlEvent)
   nextTick(initScreenSize)
   Object.assign(saveDatas, getStorage(props.romInfo.id, setEmptyData()))
+
+  gamepad.setCallback(controler.keydown, controler.keyup)
+  gamepad.frame()
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('resize', fullscreenHandler)
   document.removeEventListener('keypress', systemControlEvent)
+  gamepad.close()
 })
 </script>

@@ -21,6 +21,10 @@ export function getKeys<T extends Record<string, string>>(c: T) {
   return Object.keys(c) as UnionToTuple<Exclude<keyof T, 'SELECT' | 'START'>>
 }
 
+export function getFiler<T>(arr: T[]) {
+  return arr.filter(item => isNotNull(item)) as NonNullable<T>[]
+}
+
 export function between(v: number, min: number, max: number) {
   return max <= min
     ? min
