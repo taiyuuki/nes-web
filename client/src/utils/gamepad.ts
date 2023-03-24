@@ -16,7 +16,7 @@ class Gamepad {
   btnHolding: Record<Player, boolean[]>// 收集按钮长按
   keydown: BtnCallback// 按下回调
   keyup: BtnCallback// 弹起回调
-  
+
   constructor() {
     window.addEventListener('gamepadconnected', this.connectHandler.bind(this, true))
     window.addEventListener('gamepaddisconnected', this.connectHandler.bind(this, false))
@@ -121,6 +121,6 @@ class Gamepad {
   }
 }
 
-export function useGamepad() {
+export function createGamepad() {
   return new Gamepad()
 }

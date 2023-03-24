@@ -81,8 +81,8 @@ export const useControler = defineStore('controler', {
           '',
           '',
           '',
-          '',
-          '',
+          state.p1.SELECT,
+          state.p1.START,
           '',
           '',
           state.p2.UP,
@@ -100,7 +100,7 @@ export const useControler = defineStore('controler', {
         document.dispatchEvent(new KeyboardEvent('keydown', { code: keyCode }))
       }
     },
-    keyup(player: 'p1' | 'p2', bindex: number) {
+    keyup(player: Player, bindex: number) {
       const keyCode = this.gamepad_btns[player][bindex]
       if (isNotEmptyString(keyCode)) {
         document.dispatchEvent(new KeyboardEvent('keyup', { code: keyCode }))
