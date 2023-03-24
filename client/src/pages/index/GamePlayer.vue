@@ -8,6 +8,59 @@
         <GameEmulator
           :rom-info="romInfo"
         />
+        <div
+          m="t-10"
+          p="y-10"
+          class="no-zpix"
+        >
+          <el-descriptions
+            :title="romInfo.title"
+            :column="2"
+            class="w-fit"
+            border
+          >
+            <el-descriptions-item
+              label-align="right"
+            >
+              <template #label>
+                发行
+              </template>
+              {{ romInfo.publisher }}
+            </el-descriptions-item>
+            <el-descriptions-item
+              label-align="right"
+            >
+              <template #label>
+                发布
+              </template>
+              {{ romInfo.source }}
+            </el-descriptions-item>
+            <el-descriptions-item
+              label-align="right"
+            >
+              <template #label>
+                容量
+              </template>
+              {{ romSize }} KB
+            </el-descriptions-item>
+            <el-descriptions-item
+              label-align="right"
+            >
+              <template #label>
+                类型
+              </template>
+              {{ romInfo.type }} - {{ romInfo.category }}
+            </el-descriptions-item>
+            <el-descriptions-item
+              label-align="right"
+            >
+              <template #label>
+                备注
+              </template>
+              {{ romInfo.comment }}
+            </el-descriptions-item>
+          </el-descriptions>
+        </div>
       </div>
       <div
         v-if="!isGettingRandom"
@@ -21,59 +74,6 @@
           @click="playGame(rom)"
         />
       </div>
-    </div>
-    <div
-      m="t-10"
-      p="y-10"
-      class="no-zpix"
-    >
-      <el-descriptions
-        :title="romInfo.title"
-        :column="2"
-        class="w-fit"
-        border
-      >
-        <el-descriptions-item
-          label-align="right"
-        >
-          <template #label>
-            发行
-          </template>
-          {{ romInfo.publisher }}
-        </el-descriptions-item>
-        <el-descriptions-item
-          label-align="right"
-        >
-          <template #label>
-            发布
-          </template>
-          {{ romInfo.source }}
-        </el-descriptions-item>
-        <el-descriptions-item
-          label-align="right"
-        >
-          <template #label>
-            容量
-          </template>
-          {{ romSize }} KB
-        </el-descriptions-item>
-        <el-descriptions-item
-          label-align="right"
-        >
-          <template #label>
-            类型
-          </template>
-          {{ romInfo.type }} - {{ romInfo.category }}
-        </el-descriptions-item>
-        <el-descriptions-item
-          label-align="right"
-        >
-          <template #label>
-            备注
-          </template>
-          {{ romInfo.comment }}
-        </el-descriptions-item>
-      </el-descriptions>
     </div>
   </template>
 </template>
