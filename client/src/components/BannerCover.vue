@@ -1,3 +1,11 @@
+<script setup lang="ts">
+defineProps<{ src: string; title: string }>()
+let isLoading = $ref(true)
+function loaded() {
+    isLoading = false
+}
+</script>
+
 <template>
   <div
     class="banner-cover"
@@ -23,14 +31,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-defineProps<{ src: string; title: string }>()
-let isLoading = $ref(true)
-function loaded() {
-  isLoading = false
-}
-</script>
 
 <style lang="scss">
 .banner-cover {

@@ -1,13 +1,13 @@
+<script setup lang="ts">
+useHead(() => {
+    return { title: '在线红白机游戏 - 首页' }
+})
+</script>
+
 <template>
   <AjaxBar />
   <RouterView :key="$route.fullPath" />
 </template>
-
-<script setup lang="ts">
-useHead(() => {
-  return { title: '在线红白机游戏 - 首页' }
-})
-</script>
 
 <style lang="scss">
 .game-list {

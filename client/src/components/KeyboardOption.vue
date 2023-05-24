@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import { keys_1, keys_2, keys_3, keys_4, keys_5 } from 'src/options/keyboard'
+</script>
+
 <template>
   <div
     bg="color-#1a1e24"
@@ -72,7 +76,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { keys_1, keys_2, keys_3, keys_4, keys_5 } from 'src/options/keyboard'
-</script>

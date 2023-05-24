@@ -1,3 +1,29 @@
+<script setup lang="ts">
+import { useRecent } from 'stores/recent'
+import { useCurrentGame } from 'src/stores/current'
+import { pushToGamePlayer } from 'src/router/playgame'
+import { requestRandomList } from 'src/axios'
+
+const current = useCurrentGame()
+const recent = useRecent()
+const randomList = reactive<RomInfo[]>([])
+
+function playGame(romInfo: RomInfo) {
+    current.game = romInfo
+    current.fromRouter = true
+    pushToGamePlayer(romInfo.id)
+}
+
+async function getRandomList() {
+    const data = await requestRandomList(4)
+    Object.assign(randomList, data.result)
+}
+
+onMounted(async () => {
+    await getRandomList()
+})
+</script>
+
 <template>
   <div
     display="sm:flex block"
@@ -73,29 +99,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useRecent } from 'stores/recent'
-import { useCurrentGame } from 'src/stores/current'
-import { pushToGamePlayer } from 'src/router/playgame'
-import { requestRandomList } from 'src/axios'
-
-const current = useCurrentGame()
-const recent = useRecent()
-const randomList = reactive<RomInfo[]>([])
-
-function playGame(romInfo: RomInfo) {
-  current.game = romInfo
-  current.fromRouter = true
-  pushToGamePlayer(romInfo.id)
-}
-
-async function getRandomList() {
-  const data = await requestRandomList(4)
-  Object.assign(randomList, data.result)
-}
-
-onMounted(async () => {
-  await getRandomList()
-})
-</script>

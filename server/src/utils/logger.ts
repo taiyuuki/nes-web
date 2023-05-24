@@ -1,22 +1,22 @@
 import { red, yellow, green } from 'kolorist'
 
 export const info = function (str: string) {
-  console.log(green(str))
+    console.log(green(str))
 }
 
 export const warn = function (str: string) {
-  console.log(yellow(str))
+    console.log(yellow(str))
 }
 
 export const error = function (str: string) {
-  console.log(red(str))
-  process.exit(0)
+    console.log(red(str))
+    process.exit(0)
 }
 
 export const nestLine = function () {
-  console.log()
+    console.log()
 }
 
 export default {
-  info, warn, error,
+    info, warn, error,
 }

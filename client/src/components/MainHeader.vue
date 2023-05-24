@@ -1,3 +1,36 @@
+<script setup lang="ts">
+import { useTheme, useDark } from 'stores/theme'
+import { Moon, Sunny } from '@element-plus/icons-vue'
+import { getContrastColor } from 'src/utils'
+import { searchGames } from 'src/router/playgame'
+
+const theme = useTheme()
+const dark = useDark()
+const isDark = $ref(dark.value)
+
+theme.$subscribe(() => {
+    setTheme(theme.color)
+})
+
+function setTheme(color: string) {
+    document.body.setAttribute('style', `--el-color-primary: ${color}; --primary: ${color}; --primary-front: ${getContrastColor(color)}`,)
+}
+function setDark(val: boolean | string | number) {
+    dark.value = val as boolean
+    if (dark.value) {
+        document.documentElement.classList.add('dark')
+    }
+    else {
+        document.documentElement.classList.remove('dark')
+    }
+}
+
+onMounted(() => {
+    setTheme(theme.color)
+    setDark(dark.value)
+})
+</script>
+
 <template>
   <el-page-header
     :icon="null"
@@ -60,39 +93,6 @@
     </template>
   </el-page-header>
 </template>
-
-<script setup lang="ts">
-import { useTheme, useDark } from 'stores/theme'
-import { Moon, Sunny } from '@element-plus/icons-vue'
-import { getContrastColor } from 'src/utils'
-import { searchGames } from 'src/router/playgame'
-
-const theme = useTheme()
-const dark = useDark()
-const isDark = $ref(dark.value)
-
-theme.$subscribe(() => {
-  setTheme(theme.color)
-})
-
-function setTheme(color: string) {
-  document.body.setAttribute('style', `--el-color-primary: ${color}; --primary: ${color}; --primary-front: ${getContrastColor(color)}`,)
-}
-function setDark(val: boolean | string | number) {
-  dark.value = val as boolean
-  if (dark.value) {
-    document.documentElement.classList.add('dark')
-  }
-  else {
-    document.documentElement.classList.remove('dark')
-  }
-}
-
-onMounted(() => {
-  setTheme(theme.color)
-  setDark(dark.value)
-})
-</script>
 
 <style lang="scss">
 .main-header {

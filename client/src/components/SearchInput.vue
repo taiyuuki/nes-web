@@ -1,3 +1,60 @@
+<script setup lang="ts">
+import { requestSuggestions } from 'src/axios'
+import { pushToGamePlayer } from 'src/router/playgame'
+import type { AutocompleteInstance } from 'element-plus'
+import { isNotNull } from 'src/utils'
+
+interface SearchInputEmits {
+    (e: 'search', keyword: string): void
+}
+
+const emits = defineEmits<SearchInputEmits>()
+
+let keyword = $ref('')
+const elInput = $ref<AutocompleteInstance | null>(null)
+
+async function getSuggestions(keyword: string, setSuggestions: (list: Suggestion[]) => void) {
+    if (keyword.trim() === '') {
+        return
+    }
+    const data = await requestSuggestions(keyword)
+    if (data.code === 200) {
+        setSuggestions(data.suggestions)
+    }
+    else {
+        setSuggestions([{
+            id: '0', cover: '', value: '没有符合的结果',
+        }])
+    }
+}
+
+function clearInput() {
+    keyword = ''
+    if (isNotNull(elInput)) {
+        elInput.blur()
+        elInput.close()
+    }
+}
+
+function selectRom(item: Suggestion) {
+    if (item.id !== '0') {
+        pushToGamePlayer(item.id)
+        clearInput()
+    }
+}
+
+function onSearch() {
+    emits('search', keyword.trim())
+    clearInput()
+}
+
+function onEnter(e: KeyboardEvent) {
+    if (e.code === 'Enter') {
+        onSearch()
+    }
+}
+</script>
+
 <template>
   <div>
     <el-autocomplete
@@ -42,63 +99,6 @@
     </el-autocomplete>
   </div>
 </template>
-
-<script setup lang="ts">
-import { requestSuggestions } from 'src/axios'
-import { pushToGamePlayer } from 'src/router/playgame'
-import type { AutocompleteInstance } from 'element-plus'
-import { isNotNull } from 'src/utils'
-
-interface SearchInputEmits {
-  (e: 'search', keyword: string): void
-}
-
-const emits = defineEmits<SearchInputEmits>()
-
-let keyword = $ref('')
-const elInput = $ref<AutocompleteInstance | null>(null)
-
-async function getSuggestions(keyword: string, setSuggestions: (list: Suggestion[]) => void) {
-  if (keyword.trim() === '') {
-    return
-  }
-  const data = await requestSuggestions(keyword)
-  if (data.code === 200) {
-    setSuggestions(data.suggestions)
-  }
-  else {
-    setSuggestions([{
-      id: '0', cover: '', value: '没有符合的结果',
-    }])
-  }
-}
-
-function clearInput() {
-  keyword = ''
-  if (isNotNull(elInput)) {
-    elInput.blur()
-    elInput.close()
-  }
-}
-
-function selectRom(item: Suggestion) {
-  if (item.id !== '0') {
-    pushToGamePlayer(item.id)
-    clearInput()
-  }
-}
-
-function onSearch() {
-  emits('search', keyword.trim())
-  clearInput()
-}
-
-function onEnter(e: KeyboardEvent) {
-  if (e.code === 'Enter') {
-    onSearch()
-  }
-}
-</script>
 
 <style lang="scss">
 .el-scrollbar__wrap {

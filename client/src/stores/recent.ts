@@ -1,4 +1,4 @@
 export const useRecent = defineStore('recent', {
-  state: () => ({ list: [] as RomInfo[] }),
-  persist: true,
+    state: () => ({ list: [] as RomInfo[] }),
+    persist: true,
 })

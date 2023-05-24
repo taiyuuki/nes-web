@@ -1,3 +1,11 @@
+<script setup lang="ts">
+let date = '2023'
+const now = new Date().getFullYear()
+if (now > 2023) {
+    date += ` - ${now}`
+}
+</script>
+
 <template>
   <footer
     bg="color-var-theme"
@@ -47,11 +55,3 @@
     </div>
   </footer>
 </template>
-
-<script setup lang="ts">
-let date = '2023'
-const now = new Date().getFullYear()
-if (now > 2023) {
-  date += ` - ${now}`
-}
-</script>

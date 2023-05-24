@@ -7,21 +7,21 @@ let timeout: NodeJS.Timeout
 const jDown = new KeyboardEvent('keydown', { code: 'KeyW' })
 const jUp = new KeyboardEvent('keyup', { code: 'KeyW' })
 document.addEventListener('keydown', (e) => {
-  if (e.code === 'KeyU') {
-    const isDown = true
-    timeout = setInterval(() => {
-      if (isDown) {
-        document.dispatchEvent(jDown)
-      }
-      else {
-        document.dispatchEvent(jUp)
-      }
-    }, 40)
-  }
+    if (e.code === 'KeyU') {
+        const isDown = true
+        timeout = setInterval(() => {
+            if (isDown) {
+                document.dispatchEvent(jDown)
+            }
+            else {
+                document.dispatchEvent(jUp)
+            }
+        }, 40)
+    }
 })
 document.addEventListener('keyup', (e) => {
-  if (e.code === 'KeyU') {
-    clearInterval(timeout)
-  }
+    if (e.code === 'KeyU') {
+        clearInterval(timeout)
+    }
 })
 </script>

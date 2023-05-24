@@ -1,4 +1,4 @@
 module.exports = {
-  root: true,
-  extends: ['@taiyuuki/eslint-config-ts'],
+    root: true,
+    extends: ['@taiyuuki/eslint-config-ts'],
 }

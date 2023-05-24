@@ -1,3 +1,7 @@
+<script setup lang="ts">
+defineProps<{ romInfo: RomInfo }>()
+</script>
+
 <template>
   <div
     m="t-0 y-0 b-20"
@@ -30,7 +34,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-defineProps<{ romInfo: RomInfo }>()
-</script>

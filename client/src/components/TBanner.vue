@@ -1,3 +1,27 @@
+<script setup lang="ts">
+import { requestBanner } from 'src/axios'
+import { pushToGamePlayer } from 'router/playgame'
+
+const banner = reactive<{ id: string; title: string; image: string }[]>([])
+const isGettingBanner = $computed(() => banner.length === 0)
+let active = $ref(0)
+
+function getActive(cur: number) {
+    active = cur
+}
+
+function clickItem(i: number, id: string) {
+    if (active === i) {
+        pushToGamePlayer(id)
+    }
+}
+
+onMounted(async () => {
+    const data = await requestBanner()
+    Object.assign(banner, data.banner)
+})
+</script>
+
 <template>
   <el-carousel
     :interval="4000"
@@ -29,30 +53,6 @@
     </el-carousel-item>
   </el-carousel>
 </template>
-
-<script setup lang="ts">
-import { requestBanner } from 'src/axios'
-import { pushToGamePlayer } from 'router/playgame'
-
-const banner = reactive<{ id: string; title: string; image: string }[]>([])
-const isGettingBanner = $computed(() => banner.length === 0)
-let active = $ref(0)
-
-function getActive(cur: number) {
-  active = cur
-}
-
-function clickItem(i: number, id: string) {
-  if (active === i) {
-    pushToGamePlayer(id)
-  }
-}
-
-onMounted(async () => {
-  const data = await requestBanner()
-  Object.assign(banner, data.banner)
-})
-</script>
 
 <style lang="scss">
 .tbanner {

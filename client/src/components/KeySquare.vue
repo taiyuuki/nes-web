@@ -1,3 +1,56 @@
+<script setup lang="ts">
+import { useControler } from 'stores/controler'
+import { useDragged } from 'stores/dragged'
+import { keyboardNameMaps } from 'src/options/keyboard'
+import { isNotNull, stopDefault } from 'src/utils'
+import type { ControllerKeys } from 'src/utils/types'
+
+defineProps<{ keyPress: {
+    code: string
+    size: number
+    name: string
+} }>()
+const controler = useControler()
+const dragged = useDragged()
+
+function dragStart(e: DragEvent) {
+    const target = e.target as HTMLDivElement
+    dragged.target = target
+    if (isNotNull(target)) {
+        target.classList.add('key-dragging')
+    }
+}
+function dragEnd(e: DragEvent) {
+    const target = e.target as HTMLDivElement
+    if (isNotNull(target)) {
+        target.classList.remove('key-dragging')
+    }
+}
+function dropToTarget(e: DragEvent) {
+    const target = e.target as HTMLDivElement
+    if (isNotNull(target)) {
+        const targetCode = target.dataset.code
+        const targetMapKey = target.dataset.key
+        const draggedMapKey = dragged.target.dataset.key
+        if (isNotNull(draggedMapKey)) {
+            const draggedPlayer = draggedMapKey.substring(0, 2) as Player
+            const draggedKey = draggedMapKey.substring(2) as ControllerKeys
+            if (isNotNull(targetCode)) {
+                controler[draggedPlayer][draggedKey] = targetCode
+            }
+            else if (isNotNull(targetMapKey)) {
+                const targetPlayer = targetMapKey.substring(0, 2) as Player
+                const targetKey = targetMapKey.substring(2) as ControllerKeys
+                const temp = controler[draggedPlayer][draggedKey] as string
+                controler[draggedPlayer][draggedKey] = controler[targetPlayer][targetKey] as string
+                controler[targetPlayer][targetKey] = temp
+            }
+        }
+    }
+    dragged.target = document.createElement('div')
+}
+</script>
+
 <template>
   <div
     class="key-square"
@@ -26,59 +79,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useControler } from 'stores/controler'
-import { useDragged } from 'stores/dragged'
-import { keyboardNameMaps } from 'src/options/keyboard'
-import { isNotNull, stopDefault } from 'src/utils'
-import type { ControllerKeys } from 'src/utils/types'
-
-defineProps<{ keyPress: {
-  code: string
-  size: number
-  name: string
-} }>()
-const controler = useControler()
-const dragged = useDragged()
-
-function dragStart(e: DragEvent) {
-  const target = e.target as HTMLDivElement
-  dragged.target = target
-  if (isNotNull(target)) {
-    target.classList.add('key-dragging')
-  }
-}
-function dragEnd(e: DragEvent) {
-  const target = e.target as HTMLDivElement
-  if (isNotNull(target)) {
-    target.classList.remove('key-dragging')
-  }
-}
-function dropToTarget(e: DragEvent) {
-  const target = e.target as HTMLDivElement
-  if (isNotNull(target)) {
-    const targetCode = target.dataset.code
-    const targetMapKey = target.dataset.key
-    const draggedMapKey = dragged.target.dataset.key
-    if (isNotNull(draggedMapKey)) {
-      const draggedPlayer = draggedMapKey.substring(0, 2) as Player
-      const draggedKey = draggedMapKey.substring(2) as ControllerKeys
-      if (isNotNull(targetCode)) {
-        controler[draggedPlayer][draggedKey] = targetCode
-      }
-      else if (isNotNull(targetMapKey)) {
-        const targetPlayer = targetMapKey.substring(0, 2) as Player
-        const targetKey = targetMapKey.substring(2) as ControllerKeys
-        const temp = controler[draggedPlayer][draggedKey] as string
-        controler[draggedPlayer][draggedKey] = controler[targetPlayer][targetKey] as string
-        controler[targetPlayer][targetKey] = temp
-      }
-    }
-  }
-  dragged.target = document.createElement('div')
-}
-</script>
 
 <style lang="scss">
 .key-square {

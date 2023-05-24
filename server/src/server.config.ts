@@ -10,10 +10,10 @@ export const getDataBasePath = () => join(__dirname, dbPath)
 export const getRomPath = () => join(__dirname, romPath)
 
 export default {
-  romDir,
-  imgDir,
-  getDataBasePath,
-  getRomPath,
-  port,
-  baseURL,
+    romDir,
+    imgDir,
+    getDataBasePath,
+    getRomPath,
+    port,
+    baseURL,
 }

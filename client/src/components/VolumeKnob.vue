@@ -1,3 +1,64 @@
+<script setup lang="ts">
+const props = defineProps<{ gain: number }>()
+const emits = defineEmits<VolumeKnobEmits>()
+interface VolumeKnobEmits {
+    (event: 'update:gain', gain: number): void
+}
+
+const circlePosition = computed(() => 100 - props.gain + 10)
+
+let temp = toRaw(props.gain)
+function emitGain(gain: number) {
+    if (gain > 100) {
+        gain = 100
+    }
+    if (gain <= 0) {
+        gain = 0
+        temp = 100
+    }
+    emits('update:gain', gain)
+}
+
+function volumeOff() {
+    if (props.gain === 0) {
+        emits('update:gain', temp === 0 ? 100 : temp)
+    }
+    else {
+        temp = props.gain
+        emits('update:gain', 0)
+    }
+}
+
+function moveCircle(e: MouseEvent) {
+    emitGain(props.gain - e.movementY)
+    return false
+}
+
+function removeEvent() {
+    document.removeEventListener('mousemove', moveCircle)
+    document.removeEventListener('mouseup', removeEvent)
+    document.onselectstart = () => true
+    return false
+}
+
+function addDownEvent() {
+    document.onselectstart = () => false
+    document.addEventListener('mousemove', moveCircle)
+    document.addEventListener('mouseup', removeEvent)
+    return false
+}
+
+function stopDefaults(e: Event) {
+    return e.preventDefault()
+}
+
+function setVolume(e: MouseEvent) {
+    emitGain(100 - e.offsetY + 10)
+}
+
+defineExpose({ volumeOff })
+</script>
+
 <template>
   <div
     class="volume-knob"
@@ -73,67 +134,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-const props = defineProps<{ gain: number }>()
-const emits = defineEmits<VolumeKnobEmits>()
-interface VolumeKnobEmits {
-  (event: 'update:gain', gain: number): void
-}
-
-const circlePosition = computed(() => 100 - props.gain + 10)
-
-let temp = toRaw(props.gain)
-function emitGain(gain: number) {
-  if (gain > 100) {
-    gain = 100
-  }
-  if (gain <= 0) {
-    gain = 0
-    temp = 100
-  }
-  emits('update:gain', gain)
-}
-
-function volumeOff() {
-  if (props.gain === 0) {
-    emits('update:gain', temp === 0 ? 100 : temp)
-  }
-  else {
-    temp = props.gain
-    emits('update:gain', 0)
-  }
-}
-
-function moveCircle(e: MouseEvent) {
-  emitGain(props.gain - e.movementY)
-  return false
-}
-
-function removeEvent() {
-  document.removeEventListener('mousemove', moveCircle)
-  document.removeEventListener('mouseup', removeEvent)
-  document.onselectstart = () => true
-  return false
-}
-
-function addDownEvent() {
-  document.onselectstart = () => false
-  document.addEventListener('mousemove', moveCircle)
-  document.addEventListener('mouseup', removeEvent)
-  return false
-}
-
-function stopDefaults(e: Event) {
-  return e.preventDefault()
-}
-
-function setVolume(e: MouseEvent) {
-  emitGain(100 - e.offsetY + 10)
-}
-
-defineExpose({ volumeOff })
-</script>
 
 <style lang="scss">
 .volume-knob {

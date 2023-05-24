@@ -1,3 +1,11 @@
+<script setup lang="ts">
+defineProps<{ romInfo: RomInfo }>()
+let isLoading = $ref(true)
+function loaded() {
+    isLoading = false
+}
+</script>
+
 <template>
   <div
     flex="row"
@@ -39,11 +47,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-defineProps<{ romInfo: RomInfo }>()
-let isLoading = $ref(true)
-function loaded() {
-  isLoading = false
-}
-</script>

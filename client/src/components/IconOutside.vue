@@ -1,3 +1,7 @@
+<script setup lang="ts">
+defineProps<{ icon: string }>()
+</script>
+
 <template>
   <div
     :class="icon"
@@ -7,7 +11,3 @@
     pointer
   />
 </template>
-
-<script setup lang="ts">
-defineProps<{ icon: string }>()
-</script>

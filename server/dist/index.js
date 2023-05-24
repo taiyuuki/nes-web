@@ -14,6 +14,10 @@ var __copyProps = (to, from, except, desc) => {
   return to;
 };
 var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
@@ -70,15 +74,15 @@ var baseURL = `http://localhost:${port}`;
 var getDataBasePath = () => (0, import_path.join)(__dirname, dbPath);
 var getRomPath = () => (0, import_path.join)(__dirname, romPath);
 
-// node_modules/.pnpm/kolorist@1.6.0/node_modules/kolorist/dist/esm/index.mjs
+// node_modules/.pnpm/kolorist@1.8.0/node_modules/kolorist/dist/esm/index.mjs
 var enabled = true;
 var globalVar = typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : {};
 var supportLevel = 0;
 if (globalVar.process && globalVar.process.env && globalVar.process.stdout) {
-  const { FORCE_COLOR, NODE_DISABLE_COLORS, TERM } = globalVar.process.env;
-  if (NODE_DISABLE_COLORS || FORCE_COLOR === "0") {
+  const { FORCE_COLOR, NODE_DISABLE_COLORS, NO_COLOR, TERM, COLORTERM } = globalVar.process.env;
+  if (NODE_DISABLE_COLORS || NO_COLOR || FORCE_COLOR === "0") {
     enabled = false;
-  } else if (FORCE_COLOR === "1") {
+  } else if (FORCE_COLOR === "1" || FORCE_COLOR === "2" || FORCE_COLOR === "3") {
     enabled = true;
   } else if (TERM === "dumb") {
     enabled = false;
@@ -96,7 +100,17 @@ if (globalVar.process && globalVar.process.env && globalVar.process.stdout) {
     enabled = process.stdout.isTTY;
   }
   if (enabled) {
-    supportLevel = TERM && TERM.endsWith("-256color") ? 2 : 1;
+    if (process.platform === "win32") {
+      supportLevel = 3;
+    } else {
+      if (COLORTERM && (COLORTERM === "truecolor" || COLORTERM === "24bit")) {
+        supportLevel = 3;
+      } else if (TERM && (TERM.endsWith("-256color") || TERM.endsWith("256"))) {
+        supportLevel = 2;
+      } else {
+        supportLevel = 1;
+      }
+    }
   }
 }
 var options = {
@@ -210,10 +224,10 @@ async function dispatchResponse(target, res, message, err) {
 var sqlite3_default = db;
 
 // src/utils/response.ts
-function sendEmpty(res) {
+function sendEmpty(res, target) {
   res.send({
     code: 400,
-    message: "\u5185\u5BB9\u4E0D\u80FD\u4E3A\u7A7A"
+    message: `${target}\u5185\u5BB9\u4E0D\u80FD\u4E3A\u7A7A`
   });
 }
 
@@ -318,7 +332,7 @@ roms.get("/random", async (req, res) => {
 roms.get("/rom", async (req, res) => {
   const id = req.query.id;
   if (!checkQuery(id)) {
-    sendEmpty(res);
+    sendEmpty(res, "id");
     return;
   }
   const sql = {
@@ -348,7 +362,7 @@ roms.get("/suggestions", async (req, res) => {
   if (checkQuery(keyword)) {
     sql.where = [`(\`title\` like '%${decodeURI(keyword)}%')`];
   } else {
-    sendEmpty(res);
+    sendEmpty(res, "keyword");
     return;
   }
   await dispatchResponse(async () => {

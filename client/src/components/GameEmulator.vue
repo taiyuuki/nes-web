@@ -1,3 +1,304 @@
+<script setup lang="ts">
+import type { NesVueInstance, EmitErrorObj } from 'nes-vue'
+import { NesVue } from 'nes-vue'
+import { useCurrentGame } from 'src/stores/current'
+import { useControler } from 'stores/controler'
+import { getNow, stopDefault, setStorage, getStorage, removeStorage, isNotNull } from 'src/utils'
+import { errorNotify, successNotify } from 'src/utils/notify'
+import { config } from 'src/client.config'
+import VolumeKnob from 'components/VolumeKnob.vue'
+
+const props = defineProps<{ romInfo: RomInfo }>()
+
+const controler = useControler()// 控制器映射 pinia
+const current = useCurrentGame()// 保存于local的游戏信息 pinia
+
+const nes = $ref<NesVueInstance | null>(null)// 模拟器组件实例
+const knob = $ref<InstanceType<typeof VolumeKnob> | null>(null)// 音量组件实例
+const screen = $ref<HTMLDivElement | null>(null)// 游戏显示区域HTML元素
+
+const romLoading = $ref(true)// ROM加载状态
+let pauseState = $ref(false)// 游戏暂停
+let saveable = $ref(true)// 游戏可保存，暂时不让本地ROM进行保存
+const showKeyboardOptions = $ref(false)// 显示键盘设置
+let showSaveOption = $ref(false)// 显示存档
+let gameURL = $ref(props.romInfo.url)
+
+// 空存档对象
+const emptySaveData: SaveData = {
+    id: '-1',
+    image: '',
+    title: '',
+    date: '',
+}
+// 设置空存档
+function setEmptyData(): SaveData[] {
+    return Array.from<SaveData>({ length: config.emulator.saveTotal }).fill(emptySaveData)
+}
+const saveDatas = $ref<SaveData[]>(setEmptyData())
+// 游戏画面大小
+const screenSize = reactive({
+    width: '512px',
+    height: '480px',
+})
+// 缓存画面大小
+const lastSize = {
+    width: screenSize.width,
+    height: screenSize.height,
+}
+
+// 存档id
+function getSaveId(index: number) {
+    return `${props.romInfo.id}_${index}`
+}
+
+// 保存游戏
+function save(index: number) {
+    if (romLoading || !saveable) {
+        return
+    }
+    if (isNotNull(nes)) {
+        const saveImage = nes.screenshot()
+        if (isNotNull(saveImage)) {
+            saveImage.onload = () => {
+                const id = getSaveId(index)
+                nes.save(id)
+                const cvs = document.createElement('canvas')
+                cvs.width = 48
+                cvs.height = 45
+                const ctx = cvs.getContext('2d')
+                if (isNotNull(ctx)) {
+                    ctx.drawImage(saveImage, 0, 0, cvs.width, cvs.height)
+                    saveDatas[index] = {
+                        id: props.romInfo.id + id,
+                        image: cvs.toDataURL('image/png'),
+                        date: getNow(),
+                        title: props.romInfo.title,
+                    }
+                    setStorage(props.romInfo.id, unref(saveDatas))
+                }
+            }
+        }
+    }
+}
+
+// 加载存档
+function load(index?: number) {
+    if (romLoading || !saveable) {
+        return
+    }
+    if (isNotNull(nes)) {
+        nes.load(getSaveId(index ?? 0))
+        showSaveOption = false
+    }
+}
+
+// 删除存档
+function remove(index: number) {
+    if (romLoading) {
+        return
+    }
+    if (isNotNull(nes)) {
+        nes.remove(getSaveId(index))
+        saveDatas[index ?? 0] = emptySaveData
+        if (saveDatas.every(item => item.id === '-1')) {
+            removeStorage(props.romInfo.id)
+        }
+        else {
+            setStorage(props.romInfo.id, unref(saveDatas))
+        }
+    }
+}
+
+// 游戏暂停或继续
+function play() {
+    if (isNotNull(nes)) {
+        if (pauseState) {
+            nes.play()
+        }
+        else {
+            nes.pause()
+        }
+        pauseState = !pauseState
+    }
+}
+
+// 游戏重启
+function reset() {
+    if (romLoading) {
+        return
+    }
+    if (isNotNull(nes)) {
+        nes.reset()
+        pauseState = false
+    }
+}
+
+// 截图
+function screenshot() {
+    if (romLoading) {
+        return
+    }
+    if (isNotNull(nes)) {
+        nes.screenshot(true)
+    }
+}
+
+// 全屏切换
+let isFullScreen = false// 全屏状态
+function fullscreen() {
+    if (isNotNull(screen)) {
+        if (document.fullscreenElement) {
+            document.exitFullscreen()
+        }
+        else {
+            screen.requestFullscreen()
+        }
+    }
+}
+// 初始化游戏画面大小
+function initScreenSize() {
+    const { clientWidth } = document.documentElement
+    const { innerHeight } = window
+    let width = clientWidth * 0.6
+    if (clientWidth < 768) {
+        width = clientWidth - 40
+    }
+    let height = width * 240 / 256
+    if (height > innerHeight * 0.8) {
+        height = innerHeight * 0.8
+        width = (height * 256 / 240)
+    }
+    screenSize.width = width + 'px'
+    screenSize.height = height + 'px'
+}
+
+// 调整画面大小
+function fullscreenHandler() {
+    if (document.fullscreenElement) {
+        isFullScreen = true
+        lastSize.width = screenSize.width
+        lastSize.height = screenSize.height
+        screenSize.width = '100vw'
+        screenSize.height = '100vh'
+    }
+    else if (isFullScreen) {
+        isFullScreen = false
+        screenSize.width = lastSize.width
+        screenSize.height = lastSize.height
+    }
+    else {
+        initScreenSize()
+    }
+}
+
+// 鼠标滑入游戏界面显示控制区域
+let mouseMoving = $ref(false)
+let mouseMovingStamp: number
+function showConsole() {
+    if (!isNotNull(screen)) {
+        return
+    }
+    if (mouseMoving) {
+        clearTimeout(mouseMovingStamp)
+    }
+    else {
+        mouseMoving = true
+        screen.style.cursor = 'default'
+    }
+    mouseMovingStamp = window.setTimeout(() => {
+        mouseMoving = false
+        if (isNotNull(screen)) {
+            screen.style.cursor = 'none'
+        }
+    }, 1500)
+}
+
+// 选择本地ROM
+function selecteLocalRom(e: Event) {
+    const target = e.target as HTMLInputElement
+    const localRoms = target.files
+    if (isNotNull(localRoms)) {
+        gameURL = URL.createObjectURL(localRoms[0])
+        pauseState = false
+        saveable = false
+        target.value = ''
+    }
+}
+
+// 返回默认游戏
+function backToDefault() {
+    gameURL = props.romInfo.url
+    pauseState = false
+    saveable = true
+}
+
+// 错误处理
+function nesErrorAlert(e: EmitErrorObj) {
+    switch (e.code) {
+        case 404:
+            errorNotify('无法获取ROM：地址无效或网络错误')
+            break
+        case 0:
+            errorNotify('不支持的游戏ROM')
+            break
+        case 1:
+            errorNotify('保存失败')
+            break
+        case 2:
+            errorNotify('存档不存在或数据错误')
+            break
+        default:
+            break
+    }
+}
+
+// 游戏快捷键
+function systemControlEvent(e: KeyboardEvent) {
+    if (isNotNull(nes)) {
+        switch (e.code) {
+            case controler.p0.SAVE:
+                save(0)
+                break
+            case controler.p0.LOAD:
+                load(0)
+                break
+            case controler.p0.PAUSE:
+                play()
+                break
+            case controler.p0.RESET:
+                reset()
+                break
+            case controler.p0.FULL:
+                fullscreen()
+                break
+            case controler.p0.SUSPEND:
+                if (isNotNull(knob)) {
+                    knob.volumeOff()
+                }
+                break
+            case controler.p0.CUT:
+                screenshot()
+                break
+            default:
+                break
+        }
+    }
+}
+
+onMounted(() => {
+    window.addEventListener('resize', fullscreenHandler)
+    document.addEventListener('keypress', systemControlEvent)
+    nextTick(initScreenSize)
+    Object.assign(saveDatas, getStorage(props.romInfo.id, setEmptyData()))
+})
+
+onBeforeUnmount(() => {
+    window.removeEventListener('resize', fullscreenHandler)
+    document.removeEventListener('keypress', systemControlEvent)
+})
+</script>
+
 <template>
   <div>
     <el-dialog
@@ -282,311 +583,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import type { NesVueInstance, EmitErrorObj } from 'nes-vue'
-import { NesVue } from 'nes-vue'
-import { useCurrentGame } from 'src/stores/current'
-import { useControler } from 'stores/controler'
-import { getNow, stopDefault, setStorage, getStorage, removeStorage, isNotNull } from 'src/utils'
-import { errorNotify, successNotify } from 'src/utils/notify'
-import { config } from 'src/client.config'
-import VolumeKnob from 'components/VolumeKnob.vue'
-import { createGamepad } from 'src/utils/gamepad'
-
-const props = defineProps<{ romInfo: RomInfo }>()
-
-const controler = useControler()// 控制器映射 pinia
-const current = useCurrentGame()// 保存于local的游戏信息 pinia
-
-const nes = $ref<NesVueInstance | null>(null)// 模拟器组件实例
-const knob = $ref<InstanceType<typeof VolumeKnob> | null>(null)// 音量组件实例
-const screen = $ref<HTMLDivElement | null>(null)// 游戏显示区域HTML元素
-
-const romLoading = $ref(true)// ROM加载状态
-let pauseState = $ref(false)// 游戏暂停
-let saveable = $ref(true)// 游戏可保存，暂时不让本地ROM进行保存
-const showKeyboardOptions = $ref(false)// 显示键盘设置
-let showSaveOption = $ref(false)// 显示存档
-let gameURL = $ref(props.romInfo.url)
-
-// 空存档对象
-const emptySaveData: SaveData = {
-  id: '-1',
-  image: '',
-  title: '',
-  date: '',
-}
-// 设置空存档
-function setEmptyData(): SaveData[] {
-  return Array.from<SaveData>({ length: config.emulator.saveTotal }).fill(emptySaveData)
-}
-const saveDatas = $ref<SaveData[]>(setEmptyData())
-// 游戏画面大小
-const screenSize = reactive({
-  width: '512px',
-  height: '480px',
-})
-// 缓存画面大小
-const lastSize = {
-  width: screenSize.width,
-  height: screenSize.height,
-}
-
-// 存档id
-function getSaveId(index: number) {
-  return `${props.romInfo.id}_${index}`
-}
-
-// 保存游戏
-function save(index: number) {
-  if (romLoading || !saveable) {
-    return
-  }
-  if (isNotNull(nes)) {
-    const saveImage = nes.screenshot()
-    if (isNotNull(saveImage)) {
-      saveImage.onload = () => {
-        const id = getSaveId(index)
-        nes.save(id)
-        const cvs = document.createElement('canvas')
-        cvs.width = 48
-        cvs.height = 45
-        const ctx = cvs.getContext('2d')
-        if (isNotNull(ctx)) {
-          ctx.drawImage(saveImage, 0, 0, cvs.width, cvs.height)
-          saveDatas[index] = {
-            id: props.romInfo.id + id,
-            image: cvs.toDataURL('image/png'),
-            date: getNow(),
-            title: props.romInfo.title,
-          }
-          setStorage(props.romInfo.id, unref(saveDatas))
-        }
-      }
-    }
-  }
-}
-
-// 加载存档
-function load(index?: number) {
-  if (romLoading || !saveable) {
-    return
-  }
-  if (isNotNull(nes)) {
-    nes.load(getSaveId(index ?? 0))
-    showSaveOption = false
-  }
-}
-
-// 删除存档
-function remove(index: number) {
-  if (romLoading) {
-    return
-  }
-  if (isNotNull(nes)) {
-    nes.remove(getSaveId(index))
-    saveDatas[index ?? 0] = emptySaveData
-    if (saveDatas.every(item => item.id === '-1')) {
-      removeStorage(props.romInfo.id)
-    }
-    else {
-      setStorage(props.romInfo.id, unref(saveDatas))
-    }
-  }
-}
-
-// 游戏暂停或继续
-function play() {
-  if (isNotNull(nes)) {
-    if (pauseState) {
-      nes.play()
-    }
-    else {
-      nes.pause()
-    }
-    pauseState = !pauseState
-  }
-}
-
-// 游戏重启
-function reset() {
-  if (romLoading) {
-    return
-  }
-  if (isNotNull(nes)) {
-    nes.reset()
-    pauseState = false
-  }
-}
-
-// 截图
-function screenshot() {
-  if (romLoading) {
-    return
-  }
-  if (isNotNull(nes)) {
-    nes.screenshot(true)
-  }
-}
-
-// 全屏切换
-let isFullScreen = false// 全屏状态
-function fullscreen() {
-  if (isNotNull(screen)) {
-    if (document.fullscreenElement) {
-      document.exitFullscreen()
-    }
-    else {
-      screen.requestFullscreen()
-    }
-  }
-}
-// 初始化游戏画面大小
-function initScreenSize() {
-  const { clientWidth } = document.documentElement
-  const { innerHeight } = window
-  let width = clientWidth * 0.6
-  if (clientWidth < 768) {
-    width = clientWidth - 40
-  }
-  let height = width * 240 / 256
-  if (height > innerHeight * 0.8) {
-    height = innerHeight * 0.8
-    width = (height * 256 / 240)
-  }
-  screenSize.width = width + 'px'
-  screenSize.height = height + 'px'
-}
-
-// 调整画面大小
-function fullscreenHandler() {
-  if (document.fullscreenElement) {
-    isFullScreen = true
-    lastSize.width = screenSize.width
-    lastSize.height = screenSize.height
-    screenSize.width = '100vw'
-    screenSize.height = '100vh'
-  }
-  else if (isFullScreen) {
-    isFullScreen = false
-    screenSize.width = lastSize.width
-    screenSize.height = lastSize.height
-  }
-  else {
-    initScreenSize()
-  }
-}
-
-// 鼠标滑入游戏界面显示控制区域
-let mouseMoving = $ref(false)
-let mouseMovingStamp: number
-function showConsole() {
-  if (!isNotNull(screen)) {
-    return
-  }
-  if (mouseMoving) {
-    clearTimeout(mouseMovingStamp)
-  }
-  else {
-    mouseMoving = true
-    screen.style.cursor = 'default'
-  }
-  mouseMovingStamp = window.setTimeout(() => {
-    mouseMoving = false
-    if (isNotNull(screen)) {
-      screen.style.cursor = 'none'
-    }
-  }, 1500)
-}
-
-// 选择本地ROM
-function selecteLocalRom(e: Event) {
-  const target = e.target as HTMLInputElement
-  const localRoms = target.files
-  if (isNotNull(localRoms)) {
-    gameURL = URL.createObjectURL(localRoms[0])
-    pauseState = false
-    saveable = false
-    target.value = ''
-  }
-}
-
-// 返回默认游戏
-function backToDefault() {
-  gameURL = props.romInfo.url
-  pauseState = false
-  saveable = true
-}
-
-// 错误处理
-function nesErrorAlert(e: EmitErrorObj) {
-  switch (e.code) {
-    case 404:
-      errorNotify('无法获取ROM：地址无效或网络错误')
-      break
-    case 0:
-      errorNotify('不支持的游戏ROM')
-      break
-    case 1:
-      errorNotify('保存失败')
-      break
-    case 2:
-      errorNotify('存档不存在或数据错误')
-      break
-    default:
-      break
-  }
-}
-
-// 游戏快捷键
-function systemControlEvent(e: KeyboardEvent) {
-  if (isNotNull(nes)) {
-    switch (e.code) {
-      case controler.p0.SAVE:
-        save(0)
-        break
-      case controler.p0.LOAD:
-        load(0)
-        break
-      case controler.p0.PAUSE:
-        play()
-        break
-      case controler.p0.RESET:
-        reset()
-        break
-      case controler.p0.FULL:
-        fullscreen()
-        break
-      case controler.p0.SUSPEND:
-        if (isNotNull(knob)) {
-          knob.volumeOff()
-        }
-        break
-      case controler.p0.CUT:
-        screenshot()
-        break
-      default:
-        break
-    }
-  }
-}
-
-const gamepad = createGamepad()
-
-onMounted(() => {
-  window.addEventListener('resize', fullscreenHandler)
-  document.addEventListener('keypress', systemControlEvent)
-  nextTick(initScreenSize)
-  Object.assign(saveDatas, getStorage(props.romInfo.id, setEmptyData()))
-
-  gamepad.setCallback(controler.keydown, controler.keyup)
-  gamepad.frame()
-})
-
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', fullscreenHandler)
-  document.removeEventListener('keypress', systemControlEvent)
-  gamepad.close()
-})
-</script>

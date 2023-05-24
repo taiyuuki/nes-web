@@ -1,3 +1,70 @@
+<script setup lang="ts">
+import { requestCategory, requestGameList } from 'src/axios'
+import { useCurrentGame } from 'src/stores/current'
+import { pushToGamePlayer } from 'src/router/playgame'
+import { config } from 'src/client.config'
+import { isNotNull } from 'src/utils'
+
+const { query } = useRoute()
+
+const categorys = reactive<Category[]>([])
+const gameList = reactive<RomInfo[]>([])
+const current = useCurrentGame()
+let page = $ref(1)
+let total = $ref(0)
+let category = $ref('')
+let keyword = $ref('')
+let noResult = $ref(false)
+
+const isSearching = $computed(() => isNotNull(query.keyword))
+const isGettingCategorys = $computed(() => categorys.length === 0)
+const isGettingGameList = $computed(() => gameList.length === 0)
+
+const title = $computed(() => '在线红白机游戏 - ' + (isSearching ? `搜索：${query.keyword}` : '游戏列表'))
+useHead({ title })
+
+if (isSearching) {
+    keyword = query.keyword as string
+}
+
+async function getGameList(key?: string) {
+    if (noResult) {
+        noResult = false
+    }
+    if (isNotNull(key)) {
+        page = 1
+        category = key
+    }
+    gameList.length = 0
+    const resData = await requestGameList({
+        cat: category,
+        keyword,
+        page: page,
+        limit: config.pageTotal,
+    })
+    Object.assign(gameList, resData.result)
+    if (gameList.length === 0) {
+        noResult = true
+    }
+    total = resData.count
+}
+
+function playGame(game: RomInfo) {
+    current.game = game
+    current.fromRouter = true
+    pushToGamePlayer(game.id)
+}
+
+watch(() => page, () => {
+    getGameList()
+})
+
+onMounted(async () => {
+    Object.assign(categorys, await requestCategory())
+    getGameList()
+})
+</script>
+
 <template>
   <div>
     <div text="bold 1.4rem">
@@ -106,73 +173,6 @@
     class="m-x-auto m-t-10 w-fit list-pagination"
   />
 </template>
-
-<script setup lang="ts">
-import { requestCategory, requestGameList } from 'src/axios'
-import { useCurrentGame } from 'src/stores/current'
-import { pushToGamePlayer } from 'src/router/playgame'
-import { config } from 'src/client.config'
-import { isNotNull } from 'src/utils'
-
-const { query } = useRoute()
-
-const categorys = reactive<Category[]>([])
-const gameList = reactive<RomInfo[]>([])
-const current = useCurrentGame()
-let page = $ref(1)
-let total = $ref(0)
-let category = $ref('')
-let keyword = $ref('')
-let noResult = $ref(false)
-
-const isSearching = $computed(() => isNotNull(query.keyword))
-const isGettingCategorys = $computed(() => categorys.length === 0)
-const isGettingGameList = $computed(() => gameList.length === 0)
-
-const title = $computed(() => '在线红白机游戏 - ' + (isSearching ? `搜索：${query.keyword}` : '游戏列表'))
-useHead({ title })
-
-if (isSearching) {
-  keyword = query.keyword as string
-}
-
-async function getGameList(key?: string) {
-  if (noResult) {
-    noResult = false
-  }
-  if (isNotNull(key)) {
-    page = 1
-    category = key
-  }
-  gameList.length = 0
-  const resData = await requestGameList({
-    cat: category,
-    keyword,
-    page: page,
-    limit: config.pageTotal,
-  })
-  Object.assign(gameList, resData.result)
-  if (gameList.length === 0) {
-    noResult = true
-  }
-  total = resData.count
-}
-
-function playGame(game: RomInfo) {
-  current.game = game
-  current.fromRouter = true
-  pushToGamePlayer(game.id)
-}
-
-watch(() => page, () => {
-  getGameList()
-})
-
-onMounted(async () => {
-  Object.assign(categorys, await requestCategory())
-  getGameList()
-})
-</script>
 
 <style lang="scss">
 .category:hover {
