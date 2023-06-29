@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type { NesVueInstance, EmitErrorObj } from 'nes-vue'
+import type { EmitErrorObj } from 'nes-vue'
+import { useInstance } from 'src/composables/instance'
 import { NesVue } from 'nes-vue'
 import { useCurrentGame } from 'src/stores/current'
 import { useControler } from 'stores/controler'
@@ -13,8 +14,8 @@ const props = defineProps<{ romInfo: RomInfo }>()
 const controler = useControler()// 控制器映射 pinia
 const current = useCurrentGame()// 保存于local的游戏信息 pinia
 
-const nes = $ref<NesVueInstance | null>(null)// 模拟器组件实例
-const knob = $ref<InstanceType<typeof VolumeKnob> | null>(null)// 音量组件实例
+const nes = useInstance<typeof NesVue>()// 模拟器组件实例
+const knob = useInstance<typeof VolumeKnob>()// 音量组件实例
 const screen = $ref<HTMLDivElement | null>(null)// 游戏显示区域HTML元素
 
 const romLoading = $ref(true)// ROM加载状态
@@ -57,27 +58,23 @@ function save(index: number) {
     if (romLoading || !saveable) {
         return
     }
-    if (isNotNull(nes)) {
-        const saveImage = nes.screenshot()
-        if (isNotNull(saveImage)) {
-            saveImage.onload = () => {
-                const id = getSaveId(index)
-                nes.save(id)
-                const cvs = document.createElement('canvas')
-                cvs.width = 48
-                cvs.height = 45
-                const ctx = cvs.getContext('2d')
-                if (isNotNull(ctx)) {
-                    ctx.drawImage(saveImage, 0, 0, cvs.width, cvs.height)
-                    saveDatas[index] = {
-                        id: props.romInfo.id + id,
-                        image: cvs.toDataURL('image/png'),
-                        date: getNow(),
-                        title: props.romInfo.title,
-                    }
-                    setStorage(props.romInfo.id, unref(saveDatas))
-                }
+    const saveImage = nes.value.screenshot() as HTMLImageElement
+    saveImage.onload = () => {
+        const id = getSaveId(index)
+        nes.value.save(id)
+        const cvs = document.createElement('canvas')
+        cvs.width = 48
+        cvs.height = 45
+        const ctx = cvs.getContext('2d')
+        if (isNotNull(ctx)) {
+            ctx.drawImage(saveImage, 0, 0, cvs.width, cvs.height)
+            saveDatas[index] = {
+                id: props.romInfo.id + id,
+                image: cvs.toDataURL('image/png'),
+                date: getNow(),
+                title: props.romInfo.title,
             }
+            setStorage(props.romInfo.id, unref(saveDatas))
         }
     }
 }
@@ -87,10 +84,8 @@ function load(index?: number) {
     if (romLoading || !saveable) {
         return
     }
-    if (isNotNull(nes)) {
-        nes.load(getSaveId(index ?? 0))
-        showSaveOption = false
-    }
+    nes.value.load(getSaveId(index ?? 0))
+    showSaveOption = false
 }
 
 // 删除存档
@@ -98,29 +93,25 @@ function remove(index: number) {
     if (romLoading) {
         return
     }
-    if (isNotNull(nes)) {
-        nes.remove(getSaveId(index))
-        saveDatas[index ?? 0] = emptySaveData
-        if (saveDatas.every(item => item.id === '-1')) {
-            removeStorage(props.romInfo.id)
-        }
-        else {
-            setStorage(props.romInfo.id, unref(saveDatas))
-        }
+    nes.value.remove(getSaveId(index))
+    saveDatas[index ?? 0] = emptySaveData
+    if (saveDatas.every(item => item.id === '-1')) {
+        removeStorage(props.romInfo.id)
+    }
+    else {
+        setStorage(props.romInfo.id, unref(saveDatas))
     }
 }
 
 // 游戏暂停或继续
 function play() {
-    if (isNotNull(nes)) {
-        if (pauseState) {
-            nes.play()
-        }
-        else {
-            nes.pause()
-        }
-        pauseState = !pauseState
+    if (pauseState) {
+        nes.value.play()
     }
+    else {
+        nes.value.pause()
+    }
+    pauseState = !pauseState
 }
 
 // 游戏重启
@@ -128,10 +119,8 @@ function reset() {
     if (romLoading) {
         return
     }
-    if (isNotNull(nes)) {
-        nes.reset()
-        pauseState = false
-    }
+    nes.value.reset()
+    pauseState = false
 }
 
 // 截图
@@ -139,9 +128,7 @@ function screenshot() {
     if (romLoading) {
         return
     }
-    if (isNotNull(nes)) {
-        nes.screenshot(true)
-    }
+    nes.value.screenshot(true)
 }
 
 // 全屏切换
@@ -255,34 +242,30 @@ function nesErrorAlert(e: EmitErrorObj) {
 
 // 游戏快捷键
 function systemControlEvent(e: KeyboardEvent) {
-    if (isNotNull(nes)) {
-        switch (e.code) {
-            case controler.p0.SAVE:
-                save(0)
-                break
-            case controler.p0.LOAD:
-                load(0)
-                break
-            case controler.p0.PAUSE:
-                play()
-                break
-            case controler.p0.RESET:
-                reset()
-                break
-            case controler.p0.FULL:
-                fullscreen()
-                break
-            case controler.p0.SUSPEND:
-                if (isNotNull(knob)) {
-                    knob.volumeOff()
-                }
-                break
-            case controler.p0.CUT:
-                screenshot()
-                break
-            default:
-                break
-        }
+    switch (e.code) {
+        case controler.p0.SAVE:
+            save(0)
+            break
+        case controler.p0.LOAD:
+            load(0)
+            break
+        case controler.p0.PAUSE:
+            play()
+            break
+        case controler.p0.RESET:
+            reset()
+            break
+        case controler.p0.FULL:
+            fullscreen()
+            break
+        case controler.p0.SUSPEND:
+            knob.value.volumeOff()
+            break
+        case controler.p0.CUT:
+            screenshot()
+            break
+        default:
+            break
     }
 }
 
