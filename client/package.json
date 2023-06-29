@@ -20,9 +20,9 @@
     "@element-plus/icons-vue": "^2.1.0",
     "@vueuse/head": "^1.1.26",
     "axios": "^1.4.0",
-    "element-plus": "^2.3.6",
-    "nes-vue": "1.6.7",
-    "pinia": "^2.1.3",
+    "element-plus": "^2.3.7",
+    "nes-vue": "^1.6.8",
+    "pinia": "^2.1.4",
     "pinia-plugin-persistedstate": "^2.4.0",
     "vue": "^3.3.4",
     "vue-router": "^4.2.2"
@@ -32,18 +32,18 @@
     "@iconify-json/ic": "^1.1.13",
     "@taiyuuki/eslint-config-vue-unimport": "^0.0.8",
     "@taiyuuki/unocss-preset": "^0.0.4",
-    "@types/node": "^18.16.17",
+    "@types/node": "^18.16.18",
     "@unocss/preset-attributify": "^0.45.30",
     "@unocss/preset-icons": "^0.45.30",
     "@unocss/preset-uno": "^0.45.30",
     "@vitejs/plugin-vue": "^3.2.0",
     "@vue-macros/reactivity-transform": "^0.3.10",
     "autoprefixer": "^10.4.14",
-    "eslint": "^8.42.0",
+    "eslint": "^8.43.0",
     "eslint-plugin-import": "^2.27.5",
     "postcss": "^8.4.24",
     "postcss-html": "^1.5.0",
-    "sass": "^1.63.3",
+    "sass": "^1.63.6",
     "stylelint": "^14.16.1",
     "stylelint-config-rational-order": "^0.1.2",
     "stylelint-config-recommended-scss": "^8.0.0",
@@ -59,6 +59,6 @@
     "vite-plugin-pages": "^0.26.0",
     "vite-plugin-pwa": "^0.13.3",
     "vite-plugin-vue-layouts": "^0.7.0",
-    "vue-tsc": "^1.6.5"
+    "vue-tsc": "^1.8.3"
   }
 }
