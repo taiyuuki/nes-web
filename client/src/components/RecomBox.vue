@@ -1,8 +1,8 @@
 <script setup lang="ts">
 defineProps<{ romInfo: RomInfo }>()
-let isLoading = $ref(true)
+const isLoading = ref(true)
 function loaded() {
-    isLoading = false
+    isLoading.value = false
 }
 </script>
 

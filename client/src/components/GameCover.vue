@@ -2,10 +2,10 @@
 import { isNotNull } from 'src/utils'
 
 const props = defineProps<{ romInfo: RomInfo }>()
-const card = $ref<HTMLDivElement | null>(null)
-let isLoading = $ref(true)
-let cardHeight = $ref('auto')
-let isHover = $ref(false)
+const card = ref<HTMLDivElement | null>(null)
+const isLoading = ref(true)
+const cardHeight = ref('auto')
+const isHover = ref(false)
 let timer: NodeJS.Timeout | undefined
 
 function clear() {
@@ -15,38 +15,38 @@ function clear() {
 }
 
 function onHover() {
-    if (!isLoading) {
-        isHover = true
+    if (!isLoading.value) {
+        isHover.value = true
     }
 }
 
 function onLeave() {
     clear()
-    isHover = false
+    isHover.value = false
 }
 
-watch(() => isHover, () => {
+watch(() => isHover.value, () => {
     clear()
     timer = setTimeout(() => {
-        isLoading = isHover
+        isLoading.value = isHover.value
         timer = void 0
     }, 200)
 })
 
-const image = $computed(() => {
-    return isHover ? props.romInfo.image : props.romInfo.cover
+const image = computed(() => {
+    return isHover.value ? props.romInfo.image : props.romInfo.cover
 })
 
 function setCardHeight() {
-    if (card) {
-        const { width } = getComputedStyle(card)
-        cardHeight = (parseFloat(width) * 240 / 256) + 'px'
+    if (card.value) {
+        const { width } = getComputedStyle(card.value)
+        cardHeight.value = (parseFloat(width) * 240 / 256) + 'px'
     }
 }
 
 function loaded() {
     clear()
-    isLoading = false
+    isLoading.value = false
 }
 
 onMounted(() => {
@@ -61,7 +61,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div
-    ref="card"
+    ref="card.value"
     :style="`height: ${cardHeight}`"
     w="100%"
     pst="rel"

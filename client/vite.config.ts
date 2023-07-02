@@ -8,7 +8,6 @@ import autoAPIs from 'unplugin-auto-import/vite'
 import autoComponents from 'unplugin-vue-components/vite'
 import { ElementPlusResolver as elementPlus } from 'unplugin-vue-components/resolvers'
 import { VitePWA as pwa } from 'vite-plugin-pwa'
-import reactivityTransform from '@vue-macros/reactivity-transform/vite'
 
 function resolve(dir: string) {
     return path.join(__dirname, dir)
@@ -29,7 +28,6 @@ export default defineConfig({
         },
     },
     plugins: [
-        reactivityTransform(),
         vue(),
         unocss(),
         pages({
@@ -51,7 +49,6 @@ export default defineConfig({
                 'vue',
                 'pinia',
                 'vue-router',
-                'vue/macros',
                 '@vueuse/head',
             ],
             dts: 'src/auto-imports.d.ts',

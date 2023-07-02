@@ -6,7 +6,7 @@ import { searchGames } from 'src/router/playgame'
 
 const theme = useTheme()
 const dark = useDark()
-const isDark = $ref(dark.value)
+const isDark = ref(dark.value)
 
 theme.$subscribe(() => {
     setTheme(theme.color)
@@ -33,7 +33,7 @@ onMounted(() => {
 
 <template>
   <el-page-header
-    :icon="null"
+    icon=""
     class="w-100% lg:w-80% m-auto lg:w-min-1024"
   >
     <template #title>

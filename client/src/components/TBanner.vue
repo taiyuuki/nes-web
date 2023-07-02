@@ -3,15 +3,15 @@ import { requestBanner } from 'src/axios'
 import { pushToGamePlayer } from 'router/playgame'
 
 const banner = reactive<{ id: string; title: string; image: string }[]>([])
-const isGettingBanner = $computed(() => banner.length === 0)
-let active = $ref(0)
+const isGettingBanner = computed(() => banner.length === 0)
+const active = ref(0)
 
 function getActive(cur: number) {
-    active = cur
+    active.value = cur
 }
 
 function clickItem(i: number, id: string) {
-    if (active === i) {
+    if (active.value === i) {
         pushToGamePlayer(id)
     }
 }

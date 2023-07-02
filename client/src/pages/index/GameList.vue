@@ -10,43 +10,43 @@ const { query } = useRoute()
 const categorys = reactive<Category[]>([])
 const gameList = reactive<RomInfo[]>([])
 const current = useCurrentGame()
-let page = $ref(1)
-let total = $ref(0)
-let category = $ref('')
-let keyword = $ref('')
-let noResult = $ref(false)
+const page = ref(1)
+const total = ref(0)
+const category = ref('')
+const keyword = ref('')
+const noResult = ref(false)
 
-const isSearching = $computed(() => isNotNull(query.keyword))
-const isGettingCategorys = $computed(() => categorys.length === 0)
-const isGettingGameList = $computed(() => gameList.length === 0)
+const isSearching = computed(() => isNotNull(query.keyword))
+const isGettingCategorys = computed(() => categorys.length === 0)
+const isGettingGameList = computed(() => gameList.length === 0)
 
-const title = $computed(() => '在线红白机游戏 - ' + (isSearching ? `搜索：${query.keyword}` : '游戏列表'))
+const title = computed(() => '在线红白机游戏 - ' + (isSearching.value ? `搜索：${query.keyword}` : '游戏列表'))
 useHead({ title })
 
-if (isSearching) {
-    keyword = query.keyword as string
+if (isSearching.value) {
+    keyword.value = query.keyword as string
 }
 
 async function getGameList(key?: string) {
-    if (noResult) {
-        noResult = false
+    if (noResult.value) {
+        noResult.value = false
     }
     if (isNotNull(key)) {
-        page = 1
-        category = key
+        page.value = 1
+        category.value = key
     }
     gameList.length = 0
     const resData = await requestGameList({
-        cat: category,
-        keyword,
-        page: page,
+        cat: category.value,
+        keyword: keyword.value,
+        page: page.value,
         limit: config.pageTotal,
     })
     Object.assign(gameList, resData.result)
     if (gameList.length === 0) {
-        noResult = true
+        noResult.value = true
     }
-    total = resData.count
+    total.value = resData.count
 }
 
 function playGame(game: RomInfo) {

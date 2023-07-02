@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { EmitErrorObj } from 'nes-vue'
-import { useInstance } from 'src/composables/instance'
+import { useInstance, useELement } from 'src/composables/instance'
 import { NesVue } from 'nes-vue'
 import { useCurrentGame } from 'src/stores/current'
 import { useControler } from 'stores/controler'
 import { getNow, stopDefault, setStorage, getStorage, removeStorage, isNotNull } from 'src/utils'
-import { errorNotify, successNotify } from 'src/utils/notify'
+import { errorNotify } from 'src/utils/notify'
 import { config } from 'src/client.config'
 import VolumeKnob from 'components/VolumeKnob.vue'
 
@@ -16,14 +16,20 @@ const current = useCurrentGame()// 保存于local的游戏信息 pinia
 
 const nes = useInstance<typeof NesVue>()// 模拟器组件实例
 const knob = useInstance<typeof VolumeKnob>()// 音量组件实例
-const screen = $ref<HTMLDivElement | null>(null)// 游戏显示区域HTML元素
+const screen = useELement()// 游戏显示区域HTML元素
 
-const romLoading = $ref(true)// ROM加载状态
-let pauseState = $ref(false)// 游戏暂停
-let saveable = $ref(true)// 游戏可保存，暂时不让本地ROM进行保存
-const showKeyboardOptions = $ref(false)// 显示键盘设置
-let showSaveOption = $ref(false)// 显示存档
-let gameURL = $ref(props.romInfo.url)
+const romLoading = ref(true)// ROM加载状态
+const pauseState = ref(false)// 游戏暂停
+const saveable = ref(true)// 游戏可保存，暂时不让本地ROM进行保存
+const showKeyboardOptions = ref(false)// 显示键盘设置
+const showSaveOption = ref(false)// 显示存档
+const gameURL = ref(props.romInfo.url)
+const autoStart = ref(true)
+
+function success() {
+    autoStart.value = true
+    romLoading.value = false
+}
 
 // 空存档对象
 const emptySaveData: SaveData = {
@@ -36,7 +42,7 @@ const emptySaveData: SaveData = {
 function setEmptyData(): SaveData[] {
     return Array.from<SaveData>({ length: config.emulator.saveTotal }).fill(emptySaveData)
 }
-const saveDatas = $ref<SaveData[]>(setEmptyData())
+const saveDatas = reactive<SaveData[]>(setEmptyData())
 // 游戏画面大小
 const screenSize = reactive({
     width: '512px',
@@ -55,7 +61,7 @@ function getSaveId(index: number) {
 
 // 保存游戏
 function save(index: number) {
-    if (romLoading || !saveable) {
+    if (romLoading.value || !saveable.value) {
         return
     }
     const saveImage = nes.value.screenshot() as HTMLImageElement
@@ -81,16 +87,16 @@ function save(index: number) {
 
 // 加载存档
 function load(index?: number) {
-    if (romLoading || !saveable) {
+    if (romLoading.value || !saveable.value) {
         return
     }
     nes.value.load(getSaveId(index ?? 0))
-    showSaveOption = false
+    showSaveOption.value = false
 }
 
 // 删除存档
 function remove(index: number) {
-    if (romLoading) {
+    if (romLoading.value) {
         return
     }
     nes.value.remove(getSaveId(index))
@@ -105,27 +111,27 @@ function remove(index: number) {
 
 // 游戏暂停或继续
 function play() {
-    if (pauseState) {
+    if (pauseState.value) {
         nes.value.play()
     }
     else {
         nes.value.pause()
     }
-    pauseState = !pauseState
+    pauseState.value = !pauseState.value
 }
 
 // 游戏重启
 function reset() {
-    if (romLoading) {
+    if (romLoading.value) {
         return
     }
     nes.value.reset()
-    pauseState = false
+    pauseState.value = false
 }
 
 // 截图
 function screenshot() {
-    if (romLoading) {
+    if (romLoading.value) {
         return
     }
     nes.value.screenshot(true)
@@ -134,12 +140,12 @@ function screenshot() {
 // 全屏切换
 let isFullScreen = false// 全屏状态
 function fullscreen() {
-    if (isNotNull(screen)) {
+    if (isNotNull(screen.value)) {
         if (document.fullscreenElement) {
             document.exitFullscreen()
         }
         else {
-            screen.requestFullscreen()
+            screen.value.requestFullscreen()
         }
     }
 }
@@ -180,24 +186,19 @@ function fullscreenHandler() {
 }
 
 // 鼠标滑入游戏界面显示控制区域
-let mouseMoving = $ref(false)
+const mouseMoving = ref(false)
 let mouseMovingStamp: number
 function showConsole() {
-    if (!isNotNull(screen)) {
-        return
-    }
-    if (mouseMoving) {
+    if (mouseMoving.value) {
         clearTimeout(mouseMovingStamp)
     }
     else {
-        mouseMoving = true
-        screen.style.cursor = 'default'
+        mouseMoving.value = true
+        screen.value.style.cursor = 'default'
     }
     mouseMovingStamp = window.setTimeout(() => {
-        mouseMoving = false
-        if (isNotNull(screen)) {
-            screen.style.cursor = 'none'
-        }
+        mouseMoving.value = false
+        screen.value.style.cursor = 'none'
     }, 1500)
 }
 
@@ -206,18 +207,18 @@ function selecteLocalRom(e: Event) {
     const target = e.target as HTMLInputElement
     const localRoms = target.files
     if (isNotNull(localRoms)) {
-        gameURL = URL.createObjectURL(localRoms[0])
-        pauseState = false
-        saveable = false
+        gameURL.value = URL.createObjectURL(localRoms[0])
+        pauseState.value = false
+        saveable.value = false
         target.value = ''
     }
 }
 
 // 返回默认游戏
 function backToDefault() {
-    gameURL = props.romInfo.url
-    pauseState = false
-    saveable = true
+    gameURL.value = props.romInfo.url
+    pauseState.value = false
+    saveable.value = true
 }
 
 // 错误处理
@@ -269,6 +270,16 @@ function systemControlEvent(e: KeyboardEvent) {
     }
 }
 
+onBeforeMount(() => {
+    if (current.refresh) {
+        autoStart.value = false
+    }
+    else {
+        autoStart.value = true
+    }
+    current.refresh = true
+})
+
 onMounted(() => {
     window.addEventListener('resize', fullscreenHandler)
     document.addEventListener('keypress', systemControlEvent)
@@ -277,6 +288,7 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+    mouseMovingStamp && clearTimeout(mouseMovingStamp)
     window.removeEventListener('resize', fullscreenHandler)
     document.removeEventListener('keypress', systemControlEvent)
 })
@@ -406,7 +418,7 @@ onBeforeUnmount(() => {
     >
       <nes-vue
         ref="nes"
-        auto-start
+        :auto-start="autoStart"
         label="开始游戏"
         :url="gameURL"
         :width="screenSize.width"
@@ -414,10 +426,8 @@ onBeforeUnmount(() => {
         :gain="current.gain"
         :p1="controler.p1"
         :p2="controler.p2"
-        @success="romLoading = false;"
+        @success="success"
         @error="nesErrorAlert"
-        @saved="successNotify('保存游戏')"
-        @loaded="successNotify('读取游戏')"
       />
       <div
         v-if="!romLoading"

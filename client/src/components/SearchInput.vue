@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { requestSuggestions } from 'src/axios'
 import { pushToGamePlayer } from 'src/router/playgame'
-import type { AutocompleteInstance } from 'element-plus'
-import { isNotNull } from 'src/utils'
+import { ElAutocomplete } from 'element-plus'
+import 'element-plus/theme-chalk/el-autocomplete.css'
+import { useInstance } from 'src/composables/instance'
 
 interface SearchInputEmits {
     (e: 'search', keyword: string): void
@@ -10,33 +11,31 @@ interface SearchInputEmits {
 
 const emits = defineEmits<SearchInputEmits>()
 
-let keyword = $ref('')
-const elInput = $ref<AutocompleteInstance | null>(null)
+const keyword = ref('')
+const elInput = useInstance<typeof ElAutocomplete>()
 
-async function getSuggestions(keyword: string, setSuggestions: (list: Suggestion[]) => void) {
+async function getSuggestions(keyword: string, setSuggestions: (list: Suggestion[]) => void): Promise<any> {
     if (keyword.trim() === '') {
         return
     }
     const data = await requestSuggestions(keyword)
     if (data.code === 200) {
-        setSuggestions(data.suggestions)
+        return setSuggestions(data.suggestions)
     }
     else {
-        setSuggestions([{
+        return setSuggestions([{
             id: '0', cover: '', value: '没有符合的结果',
         }])
     }
 }
 
 function clearInput() {
-    keyword = ''
-    if (isNotNull(elInput)) {
-        elInput.blur()
-        elInput.close()
-    }
+    keyword.value = ''
+    elInput.value.blur()
+    elInput.value.close()
 }
 
-function selectRom(item: Suggestion) {
+function selectRom<T extends Record<string, any>>(item: T) {
     if (item.id !== '0') {
         pushToGamePlayer(item.id)
         clearInput()
@@ -44,7 +43,7 @@ function selectRom(item: Suggestion) {
 }
 
 function onSearch() {
-    emits('search', keyword.trim())
+    emits('search', keyword.value.trim())
     clearInput()
 }
 

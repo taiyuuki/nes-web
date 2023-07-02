@@ -44,11 +44,11 @@ function highjackAjax(stackEntry: StackEntry) {
 </script>
 
 <script setup lang="ts">
-let progress = $ref(0)
-let onShow = $ref(true)
-let animate = $ref(true)
-const style = $computed(() => {
-    return { transform: `translate3d(${(progress - 100)}%,${onShow ? 0 : -200}%,0)` }
+const progress = ref(0)
+const onShow = ref(true)
+const animate = ref(true)
+const style = computed(() => {
+    return { transform: `translate3d(${(progress.value - 100)}%,${onShow.value ? 0 : -200}%,0)` }
 })
 
 function start(newSpeed = 300) {
@@ -69,14 +69,14 @@ function start(newSpeed = 300) {
 
     timer !== null && clearTimeout(timer)
 
-    if (onShow !== true) {
-        progress = 0
-        animate = false
+    if (onShow.value !== true) {
+        progress.value = 0
+        animate.value = false
     }
 
     timer = window.setTimeout(() => {
-        onShow = true
-        animate = true
+        onShow.value = true
+        animate.value = true
         timer = null
         newSpeed > 0 && planNextStep()
     }, 300)
@@ -96,11 +96,11 @@ function stop() {
     }
 
     const end = () => {
-        animate = true
-        progress = 100
+        animate.value = true
+        progress.value = 100
         timer = window.setTimeout(() => {
             timer = null
-            onShow = false
+            onShow.value = false
         }, 300)
     }
     timer = window.setTimeout(end, 300)
@@ -110,14 +110,14 @@ function stop() {
 
 function increment(amount?: number) {
     if (sessions > 0) {
-        progress = inc(progress, amount)
+        progress.value = inc(progress.value, amount)
     }
 
     return sessions
 }
 
 function planNextStep() {
-    if (progress < 100) {
+    if (progress.value < 100) {
         timer = window.setTimeout(() => {
             timer = null
             increment()

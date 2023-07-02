@@ -1,8 +1,8 @@
 <script setup lang="ts">
 defineProps<{ src: string; title: string }>()
-let isLoading = $ref(true)
+const isLoading = ref(true)
 function loaded() {
-    isLoading = false
+    isLoading.value = false
 }
 </script>
 

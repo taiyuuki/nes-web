@@ -37,7 +37,6 @@
     "@unocss/preset-icons": "^0.45.30",
     "@unocss/preset-uno": "^0.45.30",
     "@vitejs/plugin-vue": "^3.2.0",
-    "@vue-macros/reactivity-transform": "^0.3.10",
     "autoprefixer": "^10.4.14",
     "eslint": "^8.43.0",
     "eslint-plugin-import": "^2.27.5",

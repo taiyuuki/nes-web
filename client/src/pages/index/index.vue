@@ -11,6 +11,7 @@ const randomList = reactive<RomInfo[]>([])
 function playGame(romInfo: RomInfo) {
     current.game = romInfo
     current.fromRouter = true
+    current.refresh = false
     pushToGamePlayer(romInfo.id)
 }
 

@@ -10,15 +10,15 @@ const { query } = useRoute()// 获取路由参数
 const current = useCurrentGame()// 当前运行游戏
 const recent = useRecent()// 最近游玩
 
-const romInfoZip = $ref<RomInfo[]>([])// ROM数据用数组包一层，减少类型报错。
-const romInfo = $computed(() => romInfoZip[0])// 然后用计算属性获取ROM信息
+const romInfoZip = reactive<RomInfo[]>([])// ROM数据用数组包一层，减少类型报错。
+const romInfo = computed(() => romInfoZip[0])// 然后用计算属性获取ROM信息
 const randomList = reactive<RomInfo[]>([])
-const isGettingRandom = $computed(() => randomList.length === 0)
-const isGettingRomInfoZip = $computed(() => romInfoZip.length === 0)
+const isGettingRandom = computed(() => randomList.length === 0)
+const isGettingRomInfoZip = computed(() => romInfoZip.length === 0)
 
 // 页面title
-const title = $computed(() => {
-    return '在线红白机游戏 - ' + (romInfoZip.length > 0 ? romInfo.title : 'FC模拟器')
+const title = computed(() => {
+    return '在线红白机游戏 - ' + (romInfoZip.length > 0 ? romInfo.value.title : 'FC模拟器')
 })
 useHead(() => ({ title }))
 
@@ -40,12 +40,12 @@ async function requestGameInfo() {
     }
 
     // 添加至最近游玩
-    const inIndex = recent.list.findIndex((rom) => rom.id === romInfo.id)
+    const inIndex = recent.list.findIndex((rom) => rom.id === romInfo.value.id)
     if (inIndex !== 0) {
         if (inIndex > 0) {
             recent.list.splice(inIndex, 1)
         }
-        recent.list.unshift(romInfo)
+        recent.list.unshift(romInfo.value)
         if (recent.list.length > config.recentTotal) {
             recent.list.pop()
         }
@@ -53,8 +53,8 @@ async function requestGameInfo() {
 }
 
 // ROM大小换算
-const romSize = $computed(() => {
-    return (Number(romInfo.size ?? 0) / 1024).toFixed(2)
+const romSize = computed(() => {
+    return (Number(romInfo.value.size ?? 0) / 1024).toFixed(2)
 })
 
 function playGame(game: RomInfo) {
@@ -65,7 +65,7 @@ function playGame(game: RomInfo) {
 
 onMounted(async () => {
     await requestGameInfo()
-    const data = await requestRandomList(config.recomTotal, romInfo.type, romInfo.id)
+    const data = await requestRandomList(config.recomTotal, romInfo.value.type, romInfo.value.id)
     Object.assign(randomList, data.result)
 })
 </script>
