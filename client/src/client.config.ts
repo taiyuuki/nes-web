@@ -1,6 +1,6 @@
 export const config = {
     // 后端接口URL
-    baseURL: 'http://localhost:8848',
+    baseURL: 'http://192.168.0.106:8848',
 
     // 首页
     recentTotal: 8, // 最近游玩保存数量

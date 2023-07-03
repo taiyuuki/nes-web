@@ -12,16 +12,18 @@
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./ --fix",
-    "dev": "vite",
+    "dev": "vite --host",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@taiyuuki/utils": "^0.4.5",
     "@vueuse/head": "^1.1.26",
     "axios": "^1.4.0",
     "element-plus": "^2.3.7",
-    "nes-vue": "^1.6.9",
+    "nes-vue": "^1.6.10",
+    "nipplejs": "^0.10.1",
     "pinia": "^2.1.4",
     "pinia-plugin-persistedstate": "^2.4.0",
     "vue": "^3.3.4",

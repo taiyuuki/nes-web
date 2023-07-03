@@ -65,14 +65,50 @@ var import_sqlite3 = __toESM(require("sqlite3"));
 
 // src/server.config.ts
 var import_path = require("path");
+
+// src/utils/query.ts
+var import_os = __toESM(require("os"));
+function checkQuery(query) {
+  if (typeof query === "string") {
+    return query.trim() !== "";
+  }
+  return query !== void 0 && query !== null;
+}
+function resolveURL(str) {
+  return baseURL + str;
+}
+function resolveRomData(rom) {
+  rom.url = resolveURL(romDir + rom.url);
+  rom.cover = resolveURL(imgDir + rom.cover);
+  rom.image = resolveURL(imgDir + rom.image);
+  console.log(rom.url);
+}
+function getIpAddress() {
+  const ifaces = import_os.default.networkInterfaces();
+  for (const dev in ifaces) {
+    const iface = ifaces[dev];
+    for (let i = 0; i < iface.length; i++) {
+      const { family, address, internal } = iface[i];
+      if (family === "IPv4" && address !== "127.0.0.1" && !internal) {
+        return address;
+      }
+    }
+  }
+}
+
+// src/server.config.ts
 var dbPath = "../db/nes.sqlite3";
 var romPath = "../roms";
 var romDir = "/roms/";
 var imgDir = "/roms/img/";
-var port = 8848;
-var baseURL = `http://localhost:${port}`;
+var hostIp = getIpAddress();
 var getDataBasePath = () => (0, import_path.join)(__dirname, dbPath);
 var getRomPath = () => (0, import_path.join)(__dirname, romPath);
+var port = 8848;
+var baseURL = `http://localhost:${port}`;
+if (process.env.NODE_ENV === "development") {
+  baseURL = `http://${hostIp}:${port}`;
+}
 
 // node_modules/.pnpm/kolorist@1.8.0/node_modules/kolorist/dist/esm/index.mjs
 var enabled = true;
@@ -229,23 +265,6 @@ function sendEmpty(res, target) {
     code: 400,
     message: `${target}\u5185\u5BB9\u4E0D\u80FD\u4E3A\u7A7A`
   });
-}
-
-// src/utils/query.ts
-function checkQuery(query) {
-  if (typeof query === "string") {
-    return query.trim() !== "";
-  }
-  return query !== void 0 && query !== null;
-}
-function resolveURL(str) {
-  return baseURL + str;
-}
-function resolveRomData(rom) {
-  rom.url = resolveURL(romDir + rom.url);
-  rom.cover = resolveURL(imgDir + rom.cover);
-  rom.image = resolveURL(imgDir + rom.image);
-  console.log(rom.url);
 }
 
 // src/routers/rom.ts
@@ -417,7 +436,10 @@ app.use(import_express2.default.json());
 app.use(setHeaders);
 app.use("/roms", import_express2.default.static(getRomPath()));
 app.use(rom_default);
+if (process.env.NODE_ENV === "development") {
+  app.set("host", hostIp);
+}
 app.listen(port, () => {
-  logger_default.info(`server: http://localhost:${port} is running...`);
+  logger_default.info(`server: ${baseURL}`);
 });
 //# sourceMappingURL=index.js.map

@@ -31,6 +31,10 @@ export function between(v: number, min: number, max: number) {
         : Math.min(max, Math.max(min, v))
 }
 
+export function isBetween(v: number, min: number, max: number) {
+    return v >= min && v <= max
+}
+
 export function inc(p: number, amount?: number) {
     if (typeof amount !== 'number') {
         if (p < 25) {

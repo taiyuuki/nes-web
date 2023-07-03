@@ -4,19 +4,23 @@ import { useInstance, useELement } from 'src/composables/instance'
 import { NesVue } from 'nes-vue'
 import { useCurrentGame } from 'src/stores/current'
 import { useControler } from 'stores/controler'
-import { getNow, stopDefault, setStorage, getStorage, removeStorage, isNotNull } from 'src/utils'
+import { getNow, stopDefault, setStorage, getStorage, removeStorage, isNotNull, isBetween } from 'src/utils'
 import { errorNotify } from 'src/utils/notify'
 import { config } from 'src/client.config'
 import VolumeKnob from 'components/VolumeKnob.vue'
+import { useMobile } from 'src/composables/mobile'
+import nipple from 'nipplejs'
+import { object_keys } from '@taiyuuki/utils'
 
 const props = defineProps<{ romInfo: RomInfo }>()
 
 const controler = useControler()// 控制器映射 pinia
 const current = useCurrentGame()// 保存于local的游戏信息 pinia
 
-const nes = useInstance<typeof NesVue>()// 模拟器组件实例
+const nes_vue = useInstance<typeof NesVue>()// 模拟器组件实例
 const knob = useInstance<typeof VolumeKnob>()// 音量组件实例
 const screen = useELement()// 游戏显示区域HTML元素
+const zone = useELement()
 
 const romLoading = ref(true)// ROM加载状态
 const pauseState = ref(false)// 游戏暂停
@@ -25,6 +29,7 @@ const showKeyboardOptions = ref(false)// 显示键盘设置
 const showSaveOption = ref(false)// 显示存档
 const gameURL = ref(props.romInfo.url)
 const autoStart = ref(true)
+const isMobile = useMobile()
 
 function success() {
     autoStart.value = true
@@ -64,10 +69,10 @@ function save(index: number) {
     if (romLoading.value || !saveable.value) {
         return
     }
-    const saveImage = nes.value.screenshot() as HTMLImageElement
+    const saveImage = nes_vue.value.screenshot() as HTMLImageElement
     saveImage.onload = () => {
         const id = getSaveId(index)
-        nes.value.save(id)
+        nes_vue.value.save(id)
         const cvs = document.createElement('canvas')
         cvs.width = 48
         cvs.height = 45
@@ -90,8 +95,11 @@ function load(index?: number) {
     if (romLoading.value || !saveable.value) {
         return
     }
-    nes.value.load(getSaveId(index ?? 0))
+    nes_vue.value.load(getSaveId(index ?? 0))
     showSaveOption.value = false
+    if (pauseState.value) {
+        pauseState.value = false
+    }
 }
 
 // 删除存档
@@ -99,7 +107,7 @@ function remove(index: number) {
     if (romLoading.value) {
         return
     }
-    nes.value.remove(getSaveId(index))
+    nes_vue.value.remove(getSaveId(index))
     saveDatas[index ?? 0] = emptySaveData
     if (saveDatas.every(item => item.id === '-1')) {
         removeStorage(props.romInfo.id)
@@ -112,10 +120,10 @@ function remove(index: number) {
 // 游戏暂停或继续
 function play() {
     if (pauseState.value) {
-        nes.value.play()
+        nes_vue.value.play()
     }
     else {
-        nes.value.pause()
+        nes_vue.value.pause()
     }
     pauseState.value = !pauseState.value
 }
@@ -125,7 +133,7 @@ function reset() {
     if (romLoading.value) {
         return
     }
-    nes.value.reset()
+    nes_vue.value.reset()
     pauseState.value = false
 }
 
@@ -134,18 +142,20 @@ function screenshot() {
     if (romLoading.value) {
         return
     }
-    nes.value.screenshot(true)
+    nes_vue.value.screenshot(true)
 }
 
 // 全屏切换
-let isFullScreen = false// 全屏状态
+const isFullScreen = ref(false)// 全屏状态
 function fullscreen() {
     if (isNotNull(screen.value)) {
         if (document.fullscreenElement) {
             document.exitFullscreen()
+            isFullScreen.value = false
         }
         else {
             screen.value.requestFullscreen()
+            isFullScreen.value = true
         }
     }
 }
@@ -169,14 +179,12 @@ function initScreenSize() {
 // 调整画面大小
 function fullscreenHandler() {
     if (document.fullscreenElement) {
-        isFullScreen = true
         lastSize.width = screenSize.width
         lastSize.height = screenSize.height
         screenSize.width = '100vw'
         screenSize.height = '100vh'
     }
-    else if (isFullScreen) {
-        isFullScreen = false
+    else if (isFullScreen.value) {
         screenSize.width = lastSize.width
         screenSize.height = lastSize.height
     }
@@ -270,6 +278,25 @@ function systemControlEvent(e: KeyboardEvent) {
     }
 }
 
+const mapperState = computed(() => ({
+    'down': {
+        code: controler.p1.DOWN,
+        state: false,
+    },
+    'up': {
+        code: controler.p1.UP,
+        state: false,
+    },
+    'left': {
+        code: controler.p1.LEFT,
+        state: false,
+    },
+    'right': {
+        code: controler.p1.RIGHT,
+        state: false,
+    },
+}))
+
 onBeforeMount(() => {
     if (current.refresh) {
         autoStart.value = false
@@ -285,6 +312,58 @@ onMounted(() => {
     document.addEventListener('keypress', systemControlEvent)
     nextTick(initScreenSize)
     Object.assign(saveDatas, getStorage(props.romInfo.id, setEmptyData()))
+
+    const mapper = nipple.create({
+        zone: zone.value,
+        mode: 'semi',
+        position: {
+            left: '80px',
+            top: '0px',
+        },
+        threshold: 0.3,
+    })
+
+    // mapper.on('start', (_, s) => {
+    //     origin.x = s.position.x
+    //     origin.y = s.position.y
+    // })
+
+    mapper.on('move', (_, s) => {
+        const AT = 18
+        const degree = s.angle.degree
+        const check = isBetween(degree, 0, AT)
+        || isBetween(degree, 90 - AT, 90 + AT)
+        || isBetween(degree, 180 - AT, 180 + AT)
+        || isBetween(degree, 270 - AT, 270 + AT)
+        || isBetween(degree, 360 - AT, 360)
+        const stateList = s.direction ? check ? [s.direction.angle] : [s.direction.x, s.direction.y] : []
+        object_keys(mapperState.value).forEach(key => {
+            if (mapperState.value[key].state && !stateList.includes(key)) {
+                mapperState.value[key].state = false
+                document.dispatchEvent(new KeyboardEvent('keyup', { code: mapperState.value[key].code }))
+            }
+            else if (!mapperState.value[key].state && stateList.includes(key)) {
+                mapperState.value[key].state = true
+                document.dispatchEvent(new KeyboardEvent('keydown', { code: mapperState.value[key].code }))
+            }
+        })
+    })
+
+    object_keys(mapperState.value).forEach(key => {
+        // mapper.on(`plain:${key}`, () => {
+        //     if (!mapperState.value[key].state) {
+        //         mapperState.value[key].state = true
+        //         document.dispatchEvent(new KeyboardEvent('keydown', { code: mapperState.value[key].code }))
+        //     }
+        // })
+
+        mapper.on('end', () => {
+            if (mapperState.value[key].state) {
+                mapperState.value[key].state = false
+                document.dispatchEvent(new KeyboardEvent('keyup', { code: mapperState.value[key].code }))
+            }
+        })
+    })
 })
 
 onBeforeUnmount(() => {
@@ -330,9 +409,9 @@ onBeforeUnmount(() => {
     </el-dialog>
     <el-dialog
       v-model="showSaveOption"
-      width="fit-content"
+      width="600px"
       :draggable="true"
-      class="bg-color-var-theme"
+      class="bg-color-var-theme w-max-100%"
     >
       <template #header>
         <div text="bold 28">
@@ -349,7 +428,7 @@ onBeforeUnmount(() => {
         <div
           v-if="romInfo"
           flex="row justify-between items-center"
-          w="550"
+          w="max-550 100%"
           border="box"
           p="r-10"
         >
@@ -360,10 +439,13 @@ onBeforeUnmount(() => {
             >
             <div
               m="l-5"
-              w="300"
+              w="max-300 50%"
             >
               <div>{{ saveData.title }}</div>
-              <div m="t-5">
+              <div
+                v-show="!isMobile"
+                m="t-5"
+              >
                 保存于{{ saveData.date }}
               </div>
             </div>
@@ -390,7 +472,7 @@ onBeforeUnmount(() => {
             <div
               m="l-5"
               text="line-45 center"
-              w="min-400"
+              w="max-400 50%"
             >
               空
             </div>
@@ -408,7 +490,6 @@ onBeforeUnmount(() => {
     <div
       ref="screen"
       overflow-hidden
-      bg="#000"
       w="fit"
       text="center"
       pst="rel"
@@ -417,7 +498,7 @@ onBeforeUnmount(() => {
       @mousemove="showConsole"
     >
       <nes-vue
-        ref="nes"
+        ref="nes_vue"
         :auto-start="autoStart"
         label="开始游戏"
         db-name="nes-web"
@@ -485,11 +566,14 @@ onBeforeUnmount(() => {
         class="i-ic:baseline-play-circle-outline translate-x--50% translate-y--50%"
         @click="play"
       />
+      <div
+        v-show="isFullScreen && isMobile"
+        ref="zone"
+        pst="fix l-0 b-20 r-50% t-50%"
+      />
     </div>
     <div
       flex="row items-center justify-between"
-      shadow="var-fcolor-2"
-      bg="color-var-theme"
       p="10"
     >
       <div
@@ -570,6 +654,7 @@ onBeforeUnmount(() => {
         placement="top"
       >
         <IconOutside
+          v-show="!isMobile"
           icon="i-fluent-emoji-high-contrast:keyboard"
           @click="showKeyboardOptions = true"
         />

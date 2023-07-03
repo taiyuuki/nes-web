@@ -1,0 +1,21 @@
+{
+    "apps": [
+        {
+            "name": "nes-web-server",
+            "cwd": "dist",
+            "script": "index.js",
+            "instances": "1",
+            "exec_mode": "cluster",
+            "env": {
+                "NODE_ENV": "development",
+                "PORT": 8848
+            },
+            "env_production": {
+                "NODE_ENV": "production",
+                "PORT": 80
+            },
+            "log_date_format": "YYYY-MM-DD_HH:mm Z",
+            "merge_logs": true
+        }
+    ]
+}

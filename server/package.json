@@ -13,7 +13,8 @@
     "lint": "eslint --ext .js,.ts ./ --fix",
     "dev": "tsup --watch",
     "build": "tsup",
-    "server": "pm2 start dist/index.js --watch",
+    "server:dev": "pm2 start pm2.json --watch",
+    "server:prod": "pm2 start pm2.json -env production",
     "test": "vitest"
   },
   "keywords": [],

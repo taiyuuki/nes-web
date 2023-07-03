@@ -1,7 +1,7 @@
 import type { Request, Response, RequestHandler, NextFunction } from 'express'
 import express from 'express'
 import roms from './routers/rom'
-import { port, getRomPath } from './server.config'
+import { port, getRomPath, hostIp, baseURL } from './server.config'
 import logger from './utils/logger'
 
 const setHeaders: RequestHandler = function (
@@ -22,6 +22,11 @@ app.use(setHeaders)
 app.use('/roms', express.static(getRomPath()))
 app.use(roms)
 
+// 开发模式下配置本地ip域名
+if (process.env.NODE_ENV === 'development') {
+    app.set('host', hostIp)
+}
+
 app.listen(port, () => {
-    logger.info(`server: http://localhost:${port} is running...`)
+    logger.info(`server: ${baseURL}`)
 })
