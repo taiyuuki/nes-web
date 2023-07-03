@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { requestBanner } from 'src/axios'
 import { pushToGamePlayer } from 'router/playgame'
+import { useMobile } from 'src/composables/mobile'
 
 const banner = reactive<{ id: string; title: string; image: string }[]>([])
 const isGettingBanner = computed(() => banner.length === 0)
 const active = ref(0)
+const isMobile = useMobile()
+
+const height = computed(() => isMobile.value ? '250px' : '480px')
 
 function getActive(cur: number) {
     active.value = cur
@@ -27,7 +31,7 @@ onMounted(async () => {
     :interval="4000"
     class="flex-1 overflow-hidden tbanner"
     type="card"
-    height="480px"
+    :height="height"
     @change="getActive"
   >
     <template v-if="isGettingBanner">
