@@ -55,7 +55,7 @@ function playGame(game: RomInfo) {
     pushToGamePlayer(game.id)
 }
 
-watch(() => page, () => {
+watch(page, () => {
     getGameList()
 })
 
