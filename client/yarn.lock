@@ -1290,10 +1290,10 @@
   resolved "https://registry.yarnpkg.com/@taiyuuki/unocss-preset/-/unocss-preset-0.0.4.tgz#14f33e7a57c14ee0c51a5f93a4944ebb2c87c772"
   integrity sha512-F2GODIelWmmrg9SA5I5f5vu4IF9Fs4bFdNmQEevd7JU9L4tgYF9JZg5cw1YVuEuT+NeDgLspdurDV5PBTs2q8g==
 
-"@taiyuuki/utils@^0.4.1":
-  version "0.4.4"
-  resolved "https://registry.yarnpkg.com/@taiyuuki/utils/-/utils-0.4.4.tgz#a788d2c110b418b7d1c462638b6e82534182c844"
-  integrity sha512-OCrY5suPsBaUcKDrKVDvVcbn8A37OiRbyn2OXqUamznEC6Q9bgZrVSatuyk4s8VvKKLn7c4DzMqgS8uclvI8mw==
+"@taiyuuki/utils@^0.4.5":
+  version "0.4.5"
+  resolved "https://registry.yarnpkg.com/@taiyuuki/utils/-/utils-0.4.5.tgz#e321204de320773f3d5d62955c7728da55e874e9"
+  integrity sha512-XLhkgshS9+O5cQX8P7WRiH2gRknOAt0KvWWZa1jetLsNJOx9mglnCbuiPoY/jZ+30wr//g6iEBGU+UROnuz4ig==
 
 "@types/debug@^4.1.7":
   version "4.1.8"
@@ -4999,12 +4999,12 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
-nes-vue@^1.6.8:
-  version "1.6.8"
-  resolved "https://registry.yarnpkg.com/nes-vue/-/nes-vue-1.6.8.tgz#70bff72bcd40f7c81892c6ece3dc2019607614c1"
-  integrity sha512-KDyF5qnccKJaQcEjdWF6SFFNo67w53rLyb5tnpkkA3kP+g7hWieYN8lVHmOHWeUaKN5GG8V11Cv6FDGq9w4xvg==
+nes-vue@^1.6.9:
+  version "1.6.9"
+  resolved "https://registry.yarnpkg.com/nes-vue/-/nes-vue-1.6.9.tgz#f6812c07443b5d92ea01578cdfbaa3006349286c"
+  integrity sha512-5VR7u3Q6v3t0h24c6cKQ3XsRa4sf6eqz+PlVRp+M/+GuKfjErb50UEhEv25w+7O2GE2VYTv8SwF62N3PwqhyYw==
   dependencies:
-    "@taiyuuki/utils" "^0.4.1"
+    "@taiyuuki/utils" "^0.4.5"
 
 node-fetch-native@^0.1.8:
   version "0.1.8"

@@ -420,6 +420,7 @@ onBeforeUnmount(() => {
         ref="nes"
         :auto-start="autoStart"
         label="开始游戏"
+        db-name="nes-web"
         :url="gameURL"
         :width="screenSize.width"
         :height="screenSize.height"

@@ -21,7 +21,7 @@
     "@vueuse/head": "^1.1.26",
     "axios": "^1.4.0",
     "element-plus": "^2.3.7",
-    "nes-vue": "^1.6.8",
+    "nes-vue": "^1.6.9",
     "pinia": "^2.1.4",
     "pinia-plugin-persistedstate": "^2.4.0",
     "vue": "^3.3.4",
