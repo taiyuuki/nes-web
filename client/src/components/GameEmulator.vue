@@ -296,6 +296,7 @@ const mapperState = computed(() => ({
         state: false,
     },
 }))
+const mapperKeys = object_keys(mapperState.value)
 
 onBeforeMount(() => {
     if (current.refresh) {
@@ -310,34 +311,36 @@ onBeforeMount(() => {
 onMounted(() => {
     window.addEventListener('resize', fullscreenHandler)
     document.addEventListener('keypress', systemControlEvent)
-    nextTick(initScreenSize)
+    if (isMobile.value) {
+        screenSize.width = '100vw'
+        screenSize.height = '100vh'
+        document.documentElement.style.overflow = 'hidden'
+    }
+    else {
+        nextTick(initScreenSize)
+    }
     Object.assign(saveDatas, getStorage(props.romInfo.id, setEmptyData()))
 
     const mapper = nipple.create({
         zone: zone.value,
-        mode: 'semi',
+        mode: 'static',
         position: {
-            left: '80px',
-            top: '0px',
+            left: '50%',
+            top: '50%',
         },
-        threshold: 0.3,
+        threshold: config.emulator.threshold,
     })
 
-    // mapper.on('start', (_, s) => {
-    //     origin.x = s.position.x
-    //     origin.y = s.position.y
-    // })
-
     mapper.on('move', (_, s) => {
-        const AT = 18
+        const DG = (90 - config.emulator.degree) / 2
         const degree = s.angle.degree
-        const check = isBetween(degree, 0, AT)
-        || isBetween(degree, 90 - AT, 90 + AT)
-        || isBetween(degree, 180 - AT, 180 + AT)
-        || isBetween(degree, 270 - AT, 270 + AT)
-        || isBetween(degree, 360 - AT, 360)
+        const check = isBetween(degree, 0, DG)
+        || isBetween(degree, 90 - DG, 90 + DG)
+        || isBetween(degree, 180 - DG, 180 + DG)
+        || isBetween(degree, 270 - DG, 270 + DG)
+        || isBetween(degree, 360 - DG, 360)
         const stateList = s.direction ? check ? [s.direction.angle] : [s.direction.x, s.direction.y] : []
-        object_keys(mapperState.value).forEach(key => {
+        mapperKeys.forEach(key => {
             if (mapperState.value[key].state && !stateList.includes(key)) {
                 mapperState.value[key].state = false
                 document.dispatchEvent(new KeyboardEvent('keyup', { code: mapperState.value[key].code }))
@@ -350,13 +353,6 @@ onMounted(() => {
     })
 
     object_keys(mapperState.value).forEach(key => {
-        // mapper.on(`plain:${key}`, () => {
-        //     if (!mapperState.value[key].state) {
-        //         mapperState.value[key].state = true
-        //         document.dispatchEvent(new KeyboardEvent('keydown', { code: mapperState.value[key].code }))
-        //     }
-        // })
-
         mapper.on('end', () => {
             if (mapperState.value[key].state) {
                 mapperState.value[key].state = false
@@ -370,6 +366,9 @@ onBeforeUnmount(() => {
     mouseMovingStamp && clearTimeout(mouseMovingStamp)
     window.removeEventListener('resize', fullscreenHandler)
     document.removeEventListener('keypress', systemControlEvent)
+    if (isMobile.value) {
+        document.documentElement.style.overflow = 'auto'
+    }
 })
 </script>
 
@@ -492,9 +491,8 @@ onBeforeUnmount(() => {
       overflow-hidden
       w="fit"
       text="center"
-      pst="rel"
       shadow="var-fcolor-2"
-      :class="{ '[&>.control]:translate-y-0': mouseMoving }"
+      :class="{ 'pst-rel': !isMobile, '[&>.control]:translate-y-0': mouseMoving && !isMobile, 'mb-container': isMobile }"
       @mousemove="showConsole"
     >
       <nes-vue
@@ -567,9 +565,9 @@ onBeforeUnmount(() => {
         @click="play"
       />
       <div
-        v-show="isFullScreen && isMobile"
+        v-show="isMobile"
         ref="zone"
-        pst="fix l-0 b-20 r-50% t-50%"
+        pst="fix l-0 b-20 r-50% t-60%"
       />
     </div>
     <div
@@ -662,3 +660,15 @@ onBeforeUnmount(() => {
     </div>
   </div>
 </template>
+
+<style lang="scss">
+.mb-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1001;
+  width: 100vw;
+  height: 100vh;
+  background-color: #000;
+}
+</style>

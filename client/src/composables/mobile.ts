@@ -1,21 +1,6 @@
+const isMobile = ref(false)
 const useMobile = () => {
-    const isMobile = ref(true)
-    const handle = () => {
-        const width = window.innerWidth
-        if (!isMobile.value && width < 768) {
-            isMobile.value = true
-        }
-        else if (isMobile.value && width >= 768) {
-            isMobile.value = false
-        }
-    }
-    onMounted(() => {
-        handle()
-        window.addEventListener('resize', handle)
-    })
-    onUnmounted(() => {
-        window.removeEventListener('resize', handle)
-    })
+    isMobile.value = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
     return isMobile
 }
 

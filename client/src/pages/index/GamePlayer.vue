@@ -75,8 +75,11 @@ onMounted(async () => {
     <InnerLoading class="h-60vh" />
   </template>
   <template v-else>
-    <div flex="md:row">
-      <div m="r-10 t-10">
+    <div
+      flex="md:row"
+      m="r-10 t-10"
+    >
+      <div>
         <GameEmulator
           :rom-info="romInfo"
         />
