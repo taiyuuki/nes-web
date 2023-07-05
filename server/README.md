@@ -16,7 +16,7 @@
 
 ## 项目运行
 
-游戏ROM、图片等静态资源，我单独打包放在[release](https://github.com/taiyuuki/nes-web/releases/download/v0.0.1/roms.zip)里，下载、解压后将roms文件夹放在server文件夹内即可。
+游戏ROM、图片等静态资源，我单独打包放在[release](../../releases/download/v0.0.1/roms.zip)里，下载、解压后将roms文件夹放在server文件夹内即可。
 
 ### 安装依赖
 

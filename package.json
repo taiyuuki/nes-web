@@ -11,9 +11,9 @@
   "homepage": "https://github.com/taiyuuki/nes-web#readme",
   "private": true,
   "dependencies": {
-    "element-plus": "^2.3.5",
+    "element-plus": "^2.3.7",
     "express": "^4.18.2",
-    "nes-vue": "^1.4.0",
+    "nes-vue": "^1.6.10",
     "vue": "^3.3.4"
   }
 }
