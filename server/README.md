@@ -86,7 +86,7 @@ pm2 monit
 
 服务器默认端口为8848，默认本地启动地址：`http://localhost:8848`
 
-地址可以在`src/server.config.ts`中进行设置，前端也需要修改`src/client.config.ts`中对应的设置。
+地址可以在`src/server.config.ts`中进行设置（修改后记得要`pnpm build`重新编译），前端也需要修改`src/client.config.ts`中对应的设置。
 
 #### 获取游戏分类
 

@@ -9,7 +9,6 @@ import { errorNotify } from 'src/utils/notify'
 import { config } from 'src/client.config'
 import VolumeKnob from 'components/VolumeKnob.vue'
 import { useMobile } from 'src/composables/mobile'
-import nipple from 'nipplejs'
 import { object_keys } from '@taiyuuki/utils'
 
 const props = defineProps<{ romInfo: RomInfo }>()
@@ -27,6 +26,7 @@ const pauseState = ref(false)// 游戏暂停
 const saveable = ref(true)// 游戏可保存，暂时不让本地ROM进行保存
 const showKeyboardOptions = ref(false)// 显示键盘设置
 const showSaveOption = ref(false)// 显示存档
+const showMobileMenu = ref(false)// 显示手机端菜单
 const gameURL = ref(props.romInfo.url)
 const autoStart = ref(true)
 const isMobile = useMobile()
@@ -143,6 +143,10 @@ function screenshot() {
         return
     }
     nes_vue.value.screenshot(true)
+}
+
+function mute() {
+    knob.value.volumeOff()
 }
 
 // 全屏切换
@@ -298,6 +302,35 @@ const mapperState = computed(() => ({
 }))
 const mapperKeys = object_keys(mapperState.value)
 
+function buttonTouch(key: string, type: string) {
+    switch (key) {
+        case 'A':
+            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.A }))
+            break
+        case 'B':
+            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.B }))
+            break
+        case 'C':
+            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.C }))
+            break
+        case 'D':
+            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.D }))
+            break
+        case 'AB':
+            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.A }))
+            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.B }))
+            break
+        case 'START':
+            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.START }))
+            break
+        case 'SELECT':
+            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.SELECT }))
+            break
+        default:
+            break
+    }
+}
+
 onBeforeMount(() => {
     if (current.refresh) {
         autoStart.value = false
@@ -315,51 +348,59 @@ onMounted(() => {
         screenSize.width = '100vw'
         screenSize.height = '100vh'
         document.documentElement.style.overflow = 'hidden'
+        document.onselectstart = () => false
     }
     else {
         nextTick(initScreenSize)
     }
     Object.assign(saveDatas, getStorage(props.romInfo.id, setEmptyData()))
 
-    const mapper = nipple.create({
-        zone: zone.value,
-        mode: 'static',
-        position: {
-            left: '50%',
-            top: '50%',
-        },
-        threshold: config.emulator.threshold,
-    })
+    if (isMobile.value) {
+        import('nipplejs').then(({ default: nipple }) => {
+            const mapper = nipple.create({
+                zone: zone.value,
+                mode: 'static',
+                position: {
+                    left: '50%',
+                    bottom: '100px',
+                },
+                threshold: config.emulator.threshold,
+            })
 
-    mapper.on('move', (_, s) => {
-        const DG = (90 - config.emulator.degree) / 2
-        const degree = s.angle.degree
-        const check = isBetween(degree, 0, DG)
-        || isBetween(degree, 90 - DG, 90 + DG)
-        || isBetween(degree, 180 - DG, 180 + DG)
-        || isBetween(degree, 270 - DG, 270 + DG)
-        || isBetween(degree, 360 - DG, 360)
-        const stateList = s.direction ? check ? [s.direction.angle] : [s.direction.x, s.direction.y] : []
-        mapperKeys.forEach(key => {
-            if (mapperState.value[key].state && !stateList.includes(key)) {
-                mapperState.value[key].state = false
-                document.dispatchEvent(new KeyboardEvent('keyup', { code: mapperState.value[key].code }))
-            }
-            else if (!mapperState.value[key].state && stateList.includes(key)) {
-                mapperState.value[key].state = true
-                document.dispatchEvent(new KeyboardEvent('keydown', { code: mapperState.value[key].code }))
-            }
-        })
-    })
+            mapper.on('move', (_, s) => {
+                if (!s.direction) {
+                    return
+                }
+                const DG = (90 - config.emulator.degree) / 2
+                const degree = s.angle.degree
+                const check = isBetween(degree, 0, DG)
+            || isBetween(degree, 90 - DG, 90 + DG)
+            || isBetween(degree, 180 - DG, 180 + DG)
+            || isBetween(degree, 270 - DG, 270 + DG)
+            || isBetween(degree, 360 - DG, 360)
+                const stateList = s.direction ? check ? [s.direction.angle] : [s.direction.x, s.direction.y] : []
+                mapperKeys.forEach(key => {
+                    if (mapperState.value[key].state && !stateList.includes(key)) {
+                        mapperState.value[key].state = false
+                        document.dispatchEvent(new KeyboardEvent('keyup', { code: mapperState.value[key].code }))
+                    }
+                    else if (!mapperState.value[key].state && stateList.includes(key)) {
+                        mapperState.value[key].state = true
+                        document.dispatchEvent(new KeyboardEvent('keydown', { code: mapperState.value[key].code }))
+                    }
+                })
+            })
 
-    object_keys(mapperState.value).forEach(key => {
-        mapper.on('end', () => {
-            if (mapperState.value[key].state) {
-                mapperState.value[key].state = false
-                document.dispatchEvent(new KeyboardEvent('keyup', { code: mapperState.value[key].code }))
-            }
+            object_keys(mapperState.value).forEach(key => {
+                mapper.on('end', () => {
+                    if (mapperState.value[key].state) {
+                        mapperState.value[key].state = false
+                        document.dispatchEvent(new KeyboardEvent('keyup', { code: mapperState.value[key].code }))
+                    }
+                })
+            })
         })
-    })
+    }
 })
 
 onBeforeUnmount(() => {
@@ -368,6 +409,7 @@ onBeforeUnmount(() => {
     document.removeEventListener('keypress', systemControlEvent)
     if (isMobile.value) {
         document.documentElement.style.overflow = 'auto'
+        document.onselectstart = () => true
     }
 })
 </script>
@@ -375,9 +417,11 @@ onBeforeUnmount(() => {
 <template>
   <div>
     <el-dialog
+      v-if="!isMobile"
       v-model="showKeyboardOptions"
       width="fit-content"
       :draggable="true"
+      append-to-body
       class="bg-color-var-theme"
       @dragover="stopDefault"
     >
@@ -409,6 +453,7 @@ onBeforeUnmount(() => {
     <el-dialog
       v-model="showSaveOption"
       width="600px"
+      append-to-body
       :draggable="true"
       class="bg-color-var-theme w-max-100%"
     >
@@ -484,6 +529,64 @@ onBeforeUnmount(() => {
             保存
           </el-button>
         </div>
+      </div>
+    </el-dialog>
+    <el-dialog
+      v-if="isMobile"
+      v-model="showMobileMenu"
+      :modal="false"
+      class="mobile-menu"
+    >
+      <div flex="row items-center justify-around wrap">
+        <IconMob
+          v-if="pauseState"
+          icon="i-fluent-emoji-high-contrast:play-button"
+          label="继续"
+          @click="play"
+        />
+        <IconMob
+          v-else
+          icon="i-fluent-emoji-high-contrast:pause-button"
+          label="暂停"
+          @click="play"
+        />
+
+        <IconMob
+          icon="i-fluent-emoji-high-contrast:record-button"
+          label="重启"
+          @click="reset"
+        />
+
+        <IconMob
+          icon="i-fluent-emoji-high-contrast:floppy-disk"
+          label="存档"
+          @click="showSaveOption = true"
+        />
+
+        <IconMob
+          v-if="current.gain > 0"
+          icon="i-ic:round-volume-up"
+          label="静音"
+          @click="mute"
+        />
+        <IconMob
+          v-else
+          icon="i-ic:round-volume-off"
+          label="有声"
+          @click="mute"
+        />
+
+        <IconMob
+          icon="i-ic:baseline-cancel"
+          label="关闭"
+          @click="showMobileMenu = false"
+        />
+
+        <IconMob
+          icon="i-ic:round-exit-to-app"
+          label="退出"
+          @click="$router.push('/gamelist')"
+        />
       </div>
     </el-dialog>
     <div
@@ -564,11 +667,72 @@ onBeforeUnmount(() => {
         class="i-ic:baseline-play-circle-outline translate-x--50% translate-y--50%"
         @click="play"
       />
-      <div
-        v-show="isMobile"
-        ref="zone"
-        pst="fix l-0 b-20 r-50% t-60%"
-      />
+      <template v-if="isMobile">
+        <div
+          ref="zone"
+          pst="fix l-0 b-80 r-60% t-60%"
+        />
+        <div pst="abs l-60% b-80 r-0 t-60%">
+          <div pst="abs r-20 b-50">
+            <NBtn
+              name="A"
+              @down="buttonTouch('A', 'keydown')"
+              @up="buttonTouch('A', 'keyup')"
+            />
+          </div>
+          <div pst="abs r-100 b-50">
+            <NBtn
+              name="B"
+              @down="buttonTouch('B', 'keydown')"
+              @up="buttonTouch('B', 'keyup')"
+            />
+          </div>
+          <div pst="abs r-20 b-120">
+            <NBtn
+              name="C"
+              @down="buttonTouch('C', 'keydown')"
+              @up="buttonTouch('C', 'keyup')"
+            />
+          </div>
+          <div pst="abs r-100 b-120">
+            <NBtn
+              name="D"
+              @down="buttonTouch('D', 'keydown')"
+              @up="buttonTouch('D', 'keyup')"
+            />
+          </div>
+          <div pst="abs r-60 b-190">
+            <NBtn
+              name="AB"
+              @down="buttonTouch('AB', 'keydown')"
+              @up="buttonTouch('AB', 'keyup')"
+            />
+          </div>
+        </div>
+        <div pst="abs l-120 b-42%">
+          <OBtn
+            name="START"
+            @down="buttonTouch('START', 'keydown')"
+            @up="buttonTouch('START', 'keyup')"
+          />
+        </div>
+        <div pst="abs l-20 b-42%">
+          <OBtn
+            name="SELECT"
+            @down="buttonTouch('SELECT', 'keydown')"
+            @up="buttonTouch('SELECT', 'keyup')"
+          />
+        </div>
+        <div
+          class="i-ic:baseline-view-module"
+          text="white 2rem"
+          opacity="0.25"
+          active="opacity-0.5 scale-120"
+          pst="abs r-50% b-140"
+          transform="translate-x-50%"
+          @click="showMobileMenu = true"
+        />
+      </template>
     </div>
     <div
       flex="row items-center justify-between"
@@ -670,5 +834,20 @@ onBeforeUnmount(() => {
   width: 100vw;
   height: 100vh;
   background-color: #000;
+  transform: translateZ(1px);
+}
+
+@media screen and (max-width: 768px) {
+  body {
+    user-select: none;
+  }
+
+  .el-overlay {
+    transform: translateZ(2px);
+  }
+
+  .mobile-menu {
+    background-color: rgb(0 0 0 / 50%);
+  }
 }
 </style>
