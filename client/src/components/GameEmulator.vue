@@ -837,17 +837,12 @@ onBeforeUnmount(() => {
   transform: translateZ(1px);
 }
 
+.el-overlay {
+  transform: translateZ(2px);
+}
+
 @media screen and (max-width: 768px) {
   body {
     user-select: none;
   }
-
-  .el-overlay {
-    transform: translateZ(2px);
-  }
-
-  .mobile-menu {
-    background-color: rgb(0 0 0 / 50%);
-  }
 }
-</style>
