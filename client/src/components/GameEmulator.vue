@@ -845,4 +845,9 @@ onBeforeUnmount(() => {
   body {
     user-select: none;
   }
+
+  .mobile-menu {
+    background-color: rgb(0 0 0 / 50%);
+  }
 }
+</style>
