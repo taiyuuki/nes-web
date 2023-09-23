@@ -10,6 +10,7 @@
 
 * 框架：`express`
 * 数据库：`sqlite3`
+* 数据库驱动： `Sequelize`
 * 类型检测：`typescript`
 * 代码格式：`eslint` 
 * 打包：`tsup`
