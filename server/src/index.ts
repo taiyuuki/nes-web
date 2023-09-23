@@ -1,8 +1,10 @@
 import type { Request, Response, RequestHandler, NextFunction } from 'express'
 import express from 'express'
-import roms from './routers/rom'
+import roms from './routers/rom_router'
+import categorys from './routers/categorys_router'
 import { port, getRomPath, hostIp, baseURL } from './server.config'
-import logger from './utils/logger'
+import * as logger from './utils/logger'
+import banner from './routers/banner_router'
 
 const setHeaders: RequestHandler = function (
     req: Request,
@@ -18,9 +20,14 @@ const setHeaders: RequestHandler = function (
 const app = express()
 
 app.use(express.json())
-app.use(setHeaders)
-app.use('/roms', express.static(getRomPath()))
-app.use(roms)
+    // 请求头
+    .use(setHeaders)
+    // 静态资源
+    .use('/roms', express.static(getRomPath()))
+    // 路由
+    .use(categorys)
+    .use(roms)
+    .use(banner)
 
 // 开发模式下配置本地ip域名
 if (process.env.NODE_ENV === 'development') {

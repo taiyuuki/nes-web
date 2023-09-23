@@ -23,92 +23,10 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 ));
 
 // src/index.ts
-var import_express2 = __toESM(require("express"));
+var import_express4 = __toESM(require("express"));
 
-// src/routers/rom.ts
+// src/routers/rom_router.ts
 var import_express = require("express");
-
-// src/sqlite3/sql.ts
-function setWhere(where) {
-  return where && where.length > 0 ? "WHERE " + where.reduce((pre, cur) => {
-    return pre + " AND " + cur;
-  }) : "";
-}
-var setSelectSql = (option) => {
-  let sql = "SELECT ";
-  if (typeof option.select === "string") {
-    sql += option.select + " ";
-  } else {
-    option.select.forEach((item, i) => {
-      if (i === option.select.length - 1) {
-        sql += `${item} `;
-      } else {
-        sql += `${item}, `;
-      }
-    });
-  }
-  sql += `FROM ${option.from} `;
-  sql += setWhere(option.where);
-  if (option.order) {
-    sql += ` ORDER BY ${option.order.by} ${option.order.sort}`;
-  }
-  if (option.limit) {
-    const count = Number(option.limit.count);
-    const page = Number(option.limit.page);
-    sql += ` LIMIT ${count * (page - 1)}, ${count}`;
-  }
-  return sql;
-};
-
-// src/sqlite3/index.ts
-var import_sqlite3 = __toESM(require("sqlite3"));
-
-// src/server.config.ts
-var import_path = require("path");
-
-// src/utils/query.ts
-var import_os = __toESM(require("os"));
-function checkQuery(query) {
-  if (typeof query === "string") {
-    return query.trim() !== "";
-  }
-  return query !== void 0 && query !== null;
-}
-function resolveURL(str) {
-  return baseURL + str;
-}
-function resolveRomData(rom) {
-  rom.url = resolveURL(romDir + rom.url);
-  rom.cover = resolveURL(imgDir + rom.cover);
-  rom.image = resolveURL(imgDir + rom.image);
-  console.log(rom.url);
-}
-function getIpAddress() {
-  const ifaces = import_os.default.networkInterfaces();
-  for (const dev in ifaces) {
-    const iface = ifaces[dev];
-    for (let i = 0; i < iface.length; i++) {
-      const { family, address, internal } = iface[i];
-      if (family === "IPv4" && address !== "127.0.0.1" && !internal) {
-        return address;
-      }
-    }
-  }
-}
-
-// src/server.config.ts
-var dbPath = "../db/nes.sqlite3";
-var romPath = "../roms";
-var romDir = "/roms/";
-var imgDir = "/roms/img/";
-var hostIp = getIpAddress();
-var getDataBasePath = () => (0, import_path.join)(__dirname, dbPath);
-var getRomPath = () => (0, import_path.join)(__dirname, romPath);
-var port = 8848;
-var baseURL = `http://localhost:${port}`;
-if (process.env.NODE_ENV === "development") {
-  baseURL = `http://${hostIp}:${port}`;
-}
 
 // node_modules/.pnpm/kolorist@1.8.0/node_modules/kolorist/dist/esm/index.mjs
 var enabled = true;
@@ -206,50 +124,27 @@ var bgLightGray = kolorist(47, 49);
 var info = function(str) {
   console.log(green(str));
 };
-var warn = function(str) {
-  console.log(yellow(str));
-};
 var error = function(str) {
   console.log(red(str));
   process.exit(0);
 };
-var logger_default = {
-  info,
-  warn,
-  error
-};
 
-// src/sqlite3/index.ts
-var sqlite3 = import_sqlite3.default.verbose();
-var db = new sqlite3.Database(getDataBasePath());
-db.allAsync = (sql, parmas) => {
-  return new Promise((resolve, reject) => {
-    db.all(sql, parmas, (err, rows) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(rows);
-    });
+// src/utils/response.ts
+var import_os = __toESM(require("os"));
+function sendEmpty(res, target) {
+  res.send({
+    code: 400,
+    message: `${target}\u5185\u5BB9\u4E0D\u80FD\u4E3A\u7A7A`
   });
-};
-db.runAsync = (sql, params) => {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, (err, rows) => {
-      if (err) {
-        reject(err);
-      }
-      resolve(rows);
-    });
-  });
-};
+}
 async function dispatchResponse(target, res, message, err) {
   message = message ?? "\u53D1\u751F\u9519\u8BEF";
   try {
     await target();
   } catch (e) {
-    logger_default.error(`${e}`);
+    error(`${e}`);
     if (err) {
-      err();
+      err(e);
     }
     res.send({
       code: 500,
@@ -257,94 +152,235 @@ async function dispatchResponse(target, res, message, err) {
     });
   }
 }
-var sqlite3_default = db;
-
-// src/utils/response.ts
-function sendEmpty(res, target) {
-  res.send({
-    code: 400,
-    message: `${target}\u5185\u5BB9\u4E0D\u80FD\u4E3A\u7A7A`
-  });
+function getIpAddress() {
+  const ifaces = import_os.default.networkInterfaces();
+  for (const dev in ifaces) {
+    const iface = ifaces[dev];
+    for (let i = 0; i < iface.length; i++) {
+      const { family, address, internal } = iface[i];
+      if (family === "IPv4" && address !== "127.0.0.1" && !internal) {
+        return address;
+      }
+    }
+  }
 }
 
-// src/routers/rom.ts
-var roms = (0, import_express.Router)();
-roms.get("/categorys", async (_, res) => {
-  await dispatchResponse(async () => {
-    const categorys = await sqlite3_default.allAsync(setSelectSql({
-      select: ["id", "name"],
-      from: "categorys"
-    }));
-    res.send({
-      code: 200,
-      categorys
-    });
-  }, res);
+// src/server.config.ts
+var import_path = require("path");
+var dbPath = "../db/nes.sqlite3";
+var romPath = "../roms";
+var romDir = "/roms/";
+var imgDir = "/roms/img/";
+var hostIp = getIpAddress();
+var getDataBasePath = () => (0, import_path.join)(__dirname, dbPath);
+var getRomPath = () => (0, import_path.join)(__dirname, romPath);
+var port = 8848;
+var baseURL = `http://localhost:${port}`;
+if (process.env.NODE_ENV === "development") {
+  baseURL = `http://${hostIp}:${port}`;
+}
+
+// src/utils/query.ts
+function checkQuery(query) {
+  if (typeof query === "string") {
+    return query.trim() !== "";
+  }
+  return query !== void 0 && query !== null;
+}
+function resolveURL(str) {
+  return baseURL + str;
+}
+function resolveRomData(rom) {
+  return {
+    id: rom.id,
+    category: rom.Category.dataValues.type,
+    url: resolveURL(romDir + rom.url),
+    cover: resolveURL(imgDir + rom.cover),
+    image: resolveURL(imgDir + rom.image),
+    title: rom.title,
+    language: rom.language,
+    type: rom.type,
+    source: rom.source,
+    comment: rom.comment,
+    location: rom.location,
+    size: rom.size,
+    publisher: rom.publisher
+  };
+}
+
+// src/services/roms_service.ts
+var import_sequelize4 = require("sequelize");
+
+// src/sequelize/models/categorys_model.ts
+var import_sequelize2 = require("sequelize");
+
+// src/sequelize/index.ts
+var import_sequelize = require("sequelize");
+var sequelize = new import_sequelize.Sequelize({
+  dialect: "sqlite",
+  storage: getDataBasePath(),
+  logging() {
+    return;
+  }
 });
-var selectList = ["roms.id", "title", "cover", "image", "language", "type", "source", "comment", "location", "categorys.name as category", "size", "publisher", "url"];
-var selectFrom = "roms join categorys on roms.type=categorys.id";
+var sequelize_default = sequelize;
+
+// src/sequelize/models/categorys_model.ts
+var Categorys = class extends import_sequelize2.Model {
+};
+var categorys_model = Categorys.init({
+  id: {
+    type: import_sequelize2.DataTypes.TEXT,
+    allowNull: false,
+    primaryKey: true
+  },
+  name: {
+    type: import_sequelize2.DataTypes.TEXT,
+    allowNull: false
+  }
+}, {
+  sequelize: sequelize_default,
+  tableName: "categorys",
+  freezeTableName: true,
+  createdAt: false,
+  updatedAt: false
+});
+categorys_model.sync();
+
+// src/sequelize/models/roms_model.ts
+var import_sequelize3 = require("sequelize");
+function textField() {
+  return {
+    type: import_sequelize3.DataTypes.TEXT,
+    allowNull: false
+  };
+}
+var Roms = class extends import_sequelize3.Model {
+};
+var roms_model = Roms.init(
+  {
+    id: {
+      type: import_sequelize3.DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
+    title: textField(),
+    cover: textField(),
+    image: textField(),
+    language: textField(),
+    type: textField(),
+    source: textField(),
+    comment: textField(),
+    location: textField(),
+    size: textField(),
+    publisher: textField(),
+    url: textField()
+  },
+  {
+    sequelize: sequelize_default,
+    modelName: "roms",
+    freezeTableName: true,
+    createdAt: false,
+    updatedAt: false
+  }
+);
+roms_model.belongsTo(categorys_model, { foreignKey: "type", targetKey: "id" });
+roms_model.sync();
+
+// src/services/roms_service.ts
+async function getRomlist(cat, keyword, page, limit) {
+  const where = {};
+  if (checkQuery(keyword)) {
+    where.title = {
+      [import_sequelize4.Op.like]: `%${keyword}%`
+    };
+  }
+  if (checkQuery(cat)) {
+    where.type = cat;
+  }
+  const result = await roms_model.findAndCountAll({
+    attributes: ["id", "title", "cover", "image", "language", "type", "source", "comment", "location", "size", "publisher", "url"],
+    include: {
+      model: categorys_model,
+      attributes: [["name", "type"]]
+    },
+    offset: (+page - 1) * +limit,
+    limit: +limit,
+    where
+  });
+  return {
+    result: result.rows.map((rom) => {
+      return resolveRomData(rom);
+    }),
+    count: result.count
+  };
+}
+async function getRomById(id) {
+  const romInfo = await roms_model.findByPk(id);
+  if (romInfo) {
+    romInfo.url = resolveURL(romDir + romInfo.url);
+    romInfo.image = resolveURL(imgDir + romInfo.image);
+    romInfo.cover = resolveURL(imgDir + romInfo.cover);
+  }
+  return romInfo;
+}
+async function getRandomList(n, cat, ignore) {
+  const where = {};
+  if (checkQuery(cat)) {
+    where.type = cat;
+  }
+  if (checkQuery(ignore)) {
+    where.id = { [import_sequelize4.Op.ne]: ignore };
+  }
+  const result = await roms_model.findAll({
+    attributes: ["id", "title", "cover", "image", "language", "type", "source", "comment", "location", "size", "publisher", "url"],
+    include: {
+      model: categorys_model,
+      attributes: [["name", "type"]]
+    },
+    order: [[(0, import_sequelize4.fn)("RANDOM"), "ASC"]],
+    offset: 1,
+    limit: +n,
+    where
+  });
+  return result.map((rom) => {
+    return resolveRomData(rom);
+  });
+}
+async function getSuggestions(keyword) {
+  const result = await roms_model.findAll({
+    attributes: ["id", "title", "cover"],
+    where: {
+      title: {
+        [import_sequelize4.Op.like]: `%${keyword}%`
+      }
+    }
+  });
+  return result;
+}
+
+// src/routers/rom_router.ts
+var roms = (0, import_express.Router)();
 roms.get("/romlist", async (req, res) => {
   let { cat, keyword, page, limit } = req.query;
   cat ??= "";
   keyword ??= "";
   page ??= "1";
   limit ??= "20";
-  const sqlOptions = {
-    select: "count(*) as count",
-    from: selectFrom,
-    where: []
-  };
-  if (checkQuery(keyword)) {
-    sqlOptions.where?.push(`(\`title\` like '%${decodeURI(keyword)}%')`);
-  }
-  if (checkQuery(cat)) {
-    sqlOptions.where?.push(`type='${cat}'`);
-  }
   await dispatchResponse(async () => {
-    const rows = await sqlite3_default.allAsync(setSelectSql(sqlOptions));
-    sqlOptions.select = selectList;
-    sqlOptions.limit = {
-      page,
-      count: limit
-    };
-    const result = await sqlite3_default.allAsync(setSelectSql(sqlOptions));
-    result.forEach((rom) => {
-      resolveRomData(rom);
-    });
+    const list = await getRomlist(cat, keyword, +page, +limit);
     res.send({
       code: 200,
-      result,
-      count: rows[0].count
+      result: list.result,
+      count: list.count
     });
   }, res);
 });
 roms.get("/random", async (req, res) => {
   let { n, cat, ignore } = req.query;
   n ??= "8";
-  const sqlOptions = {
-    select: selectList,
-    from: selectFrom,
-    order: {
-      by: "RANDOM()",
-      sort: "asc"
-    },
-    limit: {
-      page: 1,
-      count: n
-    },
-    where: []
-  };
-  if (checkQuery(cat)) {
-    sqlOptions.where?.push(`type='${cat}'`);
-  }
-  if (checkQuery(ignore)) {
-    sqlOptions.where?.push(`roms.id<>${ignore}`);
-  }
   await dispatchResponse(async () => {
-    const result = await sqlite3_default.allAsync(setSelectSql(sqlOptions));
-    result.forEach((rom) => {
-      resolveRomData(rom);
-    });
+    const result = await getRandomList(n, cat, ignore);
     res.send({ code: 200, result });
   }, res);
 });
@@ -354,18 +390,12 @@ roms.get("/rom", async (req, res) => {
     sendEmpty(res, "id");
     return;
   }
-  const sql = {
-    select: selectList,
-    from: selectFrom,
-    where: [`roms.id='${id}'`]
-  };
   await dispatchResponse(async () => {
-    const roms2 = await sqlite3_default.allAsync(setSelectSql(sql));
-    if (roms2.length === 1) {
-      resolveRomData(roms2[0]);
+    const rom = await getRomById(id);
+    if (rom) {
       res.send({
         code: 200,
-        rom: roms2[0]
+        rom
       });
     } else {
       res.send({ code: 400 });
@@ -374,52 +404,111 @@ roms.get("/rom", async (req, res) => {
 });
 roms.get("/suggestions", async (req, res) => {
   const keyword = req.query.keyword;
-  const sql = {
-    select: ["id", "title", "cover"],
-    from: "roms"
-  };
   if (checkQuery(keyword)) {
-    sql.where = [`(\`title\` like '%${decodeURI(keyword)}%')`];
+    await dispatchResponse(async () => {
+      const result = await getSuggestions(keyword);
+      if (result.length > 0) {
+        const suggestions = result.map((game) => {
+          return {
+            id: game.id,
+            value: game.title,
+            cover: resolveURL(imgDir + game.cover)
+          };
+        });
+        res.send({
+          code: 200,
+          suggestions
+        });
+      } else {
+        res.send({ code: 0 });
+      }
+    }, res);
   } else {
     sendEmpty(res, "keyword");
     return;
   }
-  await dispatchResponse(async () => {
-    const result = await sqlite3_default.allAsync(setSelectSql(sql));
-    if (result.length > 0) {
-      const suggestions = result.map((game) => {
-        return {
-          id: game.id,
-          value: game.title,
-          cover: resolveURL(imgDir + game.cover)
-        };
-      });
-      res.send({
-        code: 200,
-        suggestions
-      });
-    } else {
-      res.send({ code: 0 });
-    }
-  }, res);
 });
-roms.get("/banner", async (_, res) => {
-  const sql = {
-    select: ["roms.id as id", "image", "banner.title as title"],
-    from: "banner join roms on banner.id=roms.id"
-  };
+var rom_router_default = roms;
+
+// src/routers/categorys_router.ts
+var import_express2 = require("express");
+
+// src/services/categorys_service.ts
+async function getAllCategorys() {
+  const result = await categorys_model.findAll();
+  return result;
+}
+
+// src/routers/categorys_router.ts
+var categorys = (0, import_express2.Router)();
+categorys.get("/categorys", async (_, res) => {
   await dispatchResponse(async () => {
-    const banner = await sqlite3_default.allAsync(setSelectSql(sql));
-    banner.forEach((item) => {
-      item.image = resolveURL(imgDir + item.image);
-    });
+    const reslult = await getAllCategorys();
     res.send({
       code: 200,
-      banner
+      categorys: reslult
     });
   }, res);
 });
-var rom_default = roms;
+var categorys_router_default = categorys;
+
+// src/routers/banner_router.ts
+var import_express3 = require("express");
+
+// src/sequelize/models/banner_model.ts
+var import_sequelize5 = require("sequelize");
+var Banner = class extends import_sequelize5.Model {
+};
+var banner_model = Banner.init({
+  id: {
+    type: import_sequelize5.DataTypes.INTEGER,
+    allowNull: false,
+    primaryKey: true
+  },
+  title: {
+    type: import_sequelize5.DataTypes.TEXT,
+    allowNull: false
+  }
+}, {
+  sequelize: sequelize_default,
+  tableName: "banner",
+  freezeTableName: true,
+  createdAt: false,
+  updatedAt: false
+});
+banner_model.belongsTo(roms_model, { foreignKey: "id", targetKey: "id" });
+banner_model.sync();
+
+// src/services/banner_service.ts
+async function getBanner() {
+  const result = await banner_model.findAll({
+    attributes: ["id", "title"],
+    include: {
+      model: roms_model,
+      attributes: ["image"]
+    }
+  });
+  return result.map(({ rom, title, id }) => {
+    return {
+      id,
+      image: resolveURL(imgDir + rom.image),
+      title
+    };
+  });
+}
+
+// src/routers/banner_router.ts
+var banner = (0, import_express3.Router)();
+banner.get("/banner", async (_, res) => {
+  await dispatchResponse(async () => {
+    const banner2 = await getBanner();
+    res.send({
+      code: 200,
+      banner: banner2
+    });
+  }, res);
+});
+var banner_router_default = banner;
 
 // src/index.ts
 var setHeaders = function(req, res, next) {
@@ -431,15 +520,12 @@ var setHeaders = function(req, res, next) {
   }
   next();
 };
-var app = (0, import_express2.default)();
-app.use(import_express2.default.json());
-app.use(setHeaders);
-app.use("/roms", import_express2.default.static(getRomPath()));
-app.use(rom_default);
+var app = (0, import_express4.default)();
+app.use(import_express4.default.json()).use(setHeaders).use("/roms", import_express4.default.static(getRomPath())).use(categorys_router_default).use(rom_router_default).use(banner_router_default);
 if (process.env.NODE_ENV === "development") {
   app.set("host", hostIp);
 }
 app.listen(port, () => {
-  logger_default.info(`server: ${baseURL}`);
+  info(`server: ${baseURL}`);
 });
 //# sourceMappingURL=index.js.map

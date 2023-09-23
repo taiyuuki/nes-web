@@ -67,6 +67,7 @@ export async function requestSuggestions(keyword: string) {
 
 // 请求单个游戏
 export async function requestRomInfo(id: string): Promise<{ code: number; rom: RomInfo  }> {
+    // const { data } = await api.get(`/rom?id=${id}`)
     const { data } = await api.get(`/rom?id=${id}`)
     return data
 }

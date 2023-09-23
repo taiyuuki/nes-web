@@ -4999,10 +4999,10 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
-nes-vue@^1.6.10:
-  version "1.6.10"
-  resolved "https://registry.yarnpkg.com/nes-vue/-/nes-vue-1.6.10.tgz#d649cf7540a38af6c6a12fea0a1a8af0252624bc"
-  integrity sha512-pykTrlAtlqOI30k24G3hwP3nzR+aZTw4P+5CoQ8sxDT8nxM7Mm087OLkLJnMo4U03GkBvfacVOVOfR9VrH0m1Q==
+nes-vue@^1.6.11:
+  version "1.6.11"
+  resolved "https://registry.yarnpkg.com/nes-vue/-/nes-vue-1.6.11.tgz#cbeac0b0adf7d0d0b799ee32c5fd0e1e04438be8"
+  integrity sha512-OhdgnU7jyx++EGi68U+DlFbLpLm0vl8bCw4k4P12hDDu/SlhaN0y25FtZ6S9QlhPh0tB4Oe3RmExiwrTUOVAZg==
   dependencies:
     "@taiyuuki/utils" "^0.4.5"
 
