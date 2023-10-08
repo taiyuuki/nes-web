@@ -87,4 +87,24 @@ roms.get('/suggestions', async (req, res) => {
     }
 })
 
+// 根据id删除ROM
+// /delete?id=xxx
+roms.delete('/delete', async (req, res) => {
+    const id = req.query.id as string
+    if (!checkQuery(id)) {
+        sendEmpty(res, 'id')
+        return
+    }
+    await dispatchResponse(async () => {
+        const rom = await getRomById(id)
+        if (rom) {
+            rom.destroy()
+            res.send({ code: 200 })
+        }
+        else {
+            res.send({ code: 400 })
+        }
+    }, res)
+})
+
 export default roms

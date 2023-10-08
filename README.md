@@ -65,6 +65,7 @@
 
 * 框架：`express`
 * 数据库：`sqlite3`
+* 数据库驱动： `Sequelize`
 * 类型检测：`typescript`
 * 代码格式：`eslint` 
 * 打包：`tsup`
@@ -96,8 +97,6 @@ nes-web
 ```shell
 pnpm install
 ```
-
-注意：安装sqlite3时可能会报错，这是因为安装需要python或[mapbox/node-pre-gyp](https://github.com/mapbox/node-pre-gyp)编译二进制文件，安装此二者之一即可。
 
 #### node
 

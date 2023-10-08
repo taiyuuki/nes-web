@@ -25,8 +25,6 @@
 pnpm install
 ```
 
-注意：安装sqlite3时可能会报错，这是因为安装需要python或[mapbox/node-pre-gyp](https://github.com/mapbox/node-pre-gyp)编译二进制文件，安装此二者之一即可。
-
 ### 启动服务端
 
 #### node
