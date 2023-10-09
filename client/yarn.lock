@@ -5187,10 +5187,10 @@ natural-compare@^1.4.0:
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
   integrity sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==
 
-nes-vue@^1.7.0:
-  version "1.7.0"
-  resolved "https://registry.npmmirror.com/nes-vue/-/nes-vue-1.7.0.tgz#8ba680c686aa2f7317082ebe71dfd122c9798c1e"
-  integrity sha512-POAyW2Q1FFGmD8x4wguE4k5KQqq4IvF9CjNS7HtCFk8gS0g00Y6C5YyGYagIYbl8/aUag2WavnqzZ8MHCfnQOg==
+nes-vue@^1.7.1:
+  version "1.7.1"
+  resolved "https://registry.npmmirror.com/nes-vue/-/nes-vue-1.7.1.tgz#b3ecec10fed4339a2f0ef113ca5cfab560d2ba56"
+  integrity sha512-yqI4UHHr1TSSAmQVHHDL2BTtgau7m1YRJkaLWRGVbYYOpsXLpQRnYZ1BZMOg6FYz3Zx1DlrdTxmzJGWWXso8mg==
 
 nipplejs@^0.10.1:
   version "0.10.1"
