@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { EmitErrorObj } from 'nes-vue'
 import { useInstance, useELement } from 'src/composables/instance'
-import { NesVue } from 'nes-vue'
+import { NesVue, vGamepad } from 'nes-vue'
 import { useCurrentGame } from 'src/stores/current'
 import { useControler } from 'stores/controler'
 import { getNow, stopDefault, setStorage, getStorage, removeStorage, isNotNull, isBetween } from 'src/utils'
@@ -301,35 +301,6 @@ const mapperState = computed(() => ({
     },
 }))
 const mapperKeys = object_keys(mapperState.value)
-
-function buttonTouch(key: string, type: string) {
-    switch (key) {
-        case 'A':
-            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.A }))
-            break
-        case 'B':
-            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.B }))
-            break
-        case 'C':
-            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.C }))
-            break
-        case 'D':
-            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.D }))
-            break
-        case 'AB':
-            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.A }))
-            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.B }))
-            break
-        case 'START':
-            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.START }))
-            break
-        case 'SELECT':
-            document.dispatchEvent(new KeyboardEvent(type, { code: controler.p1.SELECT }))
-            break
-        default:
-            break
-    }
-}
 
 onBeforeMount(() => {
     if (current.refresh) {
@@ -673,54 +644,67 @@ onBeforeUnmount(() => {
           pst="fix l-0 b-80 r-60% t-60%"
         />
         <div pst="abs l-60% b-80 r-0 t-60%">
-          <div pst="abs r-20 b-50">
+          <div
+            v-gamepad:touch="'A'"
+            pst="abs r-20 b-50"
+          >
             <NBtn
+
               name="A"
-              @down="buttonTouch('A', 'keydown')"
-              @up="buttonTouch('A', 'keyup')"
             />
           </div>
-          <div pst="abs r-100 b-50">
+          <div
+            v-gamepad:touch="'B'"
+            pst="abs r-100 b-50"
+          >
             <NBtn
+
               name="B"
-              @down="buttonTouch('B', 'keydown')"
-              @up="buttonTouch('B', 'keyup')"
             />
           </div>
-          <div pst="abs r-20 b-120">
+          <div
+            v-gamepad:touch="'C'"
+            pst="abs r-20 b-120"
+          >
             <NBtn
+
               name="C"
-              @down="buttonTouch('C', 'keydown')"
-              @up="buttonTouch('C', 'keyup')"
             />
           </div>
-          <div pst="abs r-100 b-120">
+          <div
+            v-gamepad:touch="'D'"
+            pst="abs r-100 b-120"
+          >
             <NBtn
+
               name="D"
-              @down="buttonTouch('D', 'keydown')"
-              @up="buttonTouch('D', 'keyup')"
             />
           </div>
-          <div pst="abs r-60 b-190">
+          <div
+            v-gamepad:touch="['A', 'B']"
+            pst="abs r-60 b-190"
+          >
             <NBtn
               name="AB"
-              @down="buttonTouch('AB', 'keydown')"
-              @up="buttonTouch('AB', 'keyup')"
             />
           </div>
         </div>
-        <div pst="abs l-120 b-42%">
+        <div
+          v-gamepad:touch="'START'"
+          pst="abs l-120 b-42%"
+        >
           <OBtn
+
             name="START"
-            @down="buttonTouch('START', 'keydown')"
-            @up="buttonTouch('START', 'keyup')"
           />
         </div>
-        <div pst="abs l-20 b-42%">
+        <div
+          v-gamepad:touch="'SELECT'"
+          pst="abs l-20 b-42%"
+        >
           <OBtn
+
             name="SELECT"
-            @down="buttonTouch('SELECT', 'keydown')"
-            @up="buttonTouch('SELECT', 'keyup')"
           />
         </div>
         <div
