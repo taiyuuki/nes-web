@@ -1,0 +1,38 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model banner {
+  id    Int     @id @default(autoincrement())
+  title String?
+  rom   roms    @relation(fields: [id], references: [id])
+}
+
+model categorys {
+  id   String @id
+  name String
+  roms roms[]
+}
+
+model roms {
+  id        Int         @id @default(autoincrement())
+  title     String      @default("")
+  cover     String      @default("")
+  image     String      @default("")
+  language  String      @default("")
+  type      String      @default("")
+  source    String      @default("")
+  comment   String      @default("")
+  location  String      @default("")
+  size      String      @default("")
+  publisher String      @default("")
+  url       String      @default("")
+  Category  categorys   @relation(fields: [type], references: [id])
+  banners   banner[]
+}
